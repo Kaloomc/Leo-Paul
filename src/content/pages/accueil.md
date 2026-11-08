@@ -1,8 +1,9 @@
 ---
 eyebrow: SportFlash
 title: Votre actu *sport*.
-intro: "Résultats, analyses, débats : l'essentiel de l'actualité sportive au
-  quotidien sur SportFlash"
+intro: |-
+  Résultats, analyses, débats : l'actualité sportive en profondeur 
+  Retrouvez les actus chaudes sur nos réseaux 
 description: "SportFlash, l'actu sportive : foot, cyclisme, sports auto, basket,
   tennis, rugby, sports US et plus."
 image: /uploads/logo-sportflash-carre-.png
