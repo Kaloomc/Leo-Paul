@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_TITLE, CONTACT } from '../consts';
+---
+
+<BaseLayout title="Mentions légales" description={`Mentions légales et politique de confidentialité du site ${SITE_TITLE}.`}>
+  <section class="section">
+    <div class="container prose">
+      <h1>Mentions légales</h1>
+      <p class="muted">
+        ⚠️ Modèle à compléter et à faire vérifier — chaque situation (particulier,
+        auto-entrepreneur, société) a ses propres obligations.
+      </p>
+
+      <h2>Éditeur du site</h2>
+      <p>
+        [Nom, prénom ou raison sociale]<br />
+        [Statut juridique — ex. entrepreneur individuel] · SIRET : [numéro]<br />
+        [Adresse postale]<br />
+        E-mail : <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a><br />
+        Directeur de la publication : [Nom]
+      </p>
+
+      <h2>Hébergement</h2>
+      <p>
+        Netlify, Inc. — 101 2nd Street, San Francisco, CA 94105, États-Unis —
+        <a href="https://www.netlify.com" rel="noopener noreferrer">netlify.com</a>
+      </p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        L'ensemble des contenus (textes, images, logos) est la propriété de {SITE_TITLE},
+        sauf mention contraire. Toute reproduction sans autorisation est interdite.
+      </p>
+
+      <h2>Données personnelles</h2>
+      <p>
+        Les informations envoyées via le formulaire de contact (nom, e-mail, message) sont
+        utilisées uniquement pour répondre à votre demande et ne sont jamais cédées à des tiers.
+        Elles sont conservées au maximum [3 ans] après le dernier échange.
+      </p>
+      <p>
+        Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de
+        suppression de vos données : écrivez à <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>.
+        Vous pouvez aussi adresser une réclamation à la <a href="https://www.cnil.fr" rel="noopener noreferrer">CNIL</a>.
+      </p>
+
+      <h2>Cookies</h2>
+      <p>Ce site n'utilise aucun cookie de suivi ni outil publicitaire.</p>
+    </div>
+  </section>
+</BaseLayout>

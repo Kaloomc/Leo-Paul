@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ArticleCard from './ArticleCard.astro';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+  headingLevel?: 'h2' | 'h3';
+}
+const { posts, headingLevel } = Astro.props;
+---
+
+{posts.length === 0 ? (
+  <p class="muted">Aucun article pour le moment. Revenez bientôt !</p>
+) : (
+  <ul class="grid">
+    {posts.map((post) => (
+      <li><ArticleCard post={post} headingLevel={headingLevel} /></li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .grid {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  }
+  .grid > li { display: flex; }
+  .grid > li > :global(*) { flex: 1; }
+</style>

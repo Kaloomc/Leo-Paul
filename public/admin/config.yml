@@ -1,0 +1,127 @@
+# Configuration Decap CMS — https://decapcms.org/docs/configuration-options/
+backend:
+  name: github
+  repo: TON-USER/TON-REPO   # ⚠️ à remplacer, ex. leopaul/site-leo-paul
+  branch: main
+  commit_messages:
+    create: "Création de {{collection}} « {{slug}} »"
+    update: "Mise à jour de {{collection}} « {{slug}} »"
+    delete: "Suppression de {{collection}} « {{slug}} »"
+    uploadMedia: "Ajout de l'image « {{path}} »"
+    deleteMedia: "Suppression de l'image « {{path}} »"
+  # Sur Netlify, l'OAuth GitHub est géré nativement (rien à ajouter).
+  # Sur Cloudflare Pages, ajouter : base_url: https://URL-DU-PROXY-OAUTH
+
+# Test en local sans GitHub : lancer `npm run cms` dans un 2e terminal,
+# puis ouvrir http://localhost:4321/admin/index.html (ignoré en production).
+local_backend: true
+
+locale: fr
+site_url: https://monsite.netlify.app      # ⚠️ à remplacer
+display_url: https://monsite.netlify.app   # ⚠️ à remplacer
+logo_url: /favicon.svg
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+publish_mode: simple   # passer à editorial_workflow pour brouillon -> revue -> publié
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: blog
+    label: Articles
+    label_singular: Article
+    description: Les articles du blog. Laissez « Brouillon » coché tant que l'article n'est pas prêt.
+    folder: src/content/blog
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    summary: "{{title}} — {{date | date('DD/MM/YYYY')}}{{draft | ternary(' (brouillon)', '')}}"
+    sortable_fields: [date, title]
+    view_filters:
+      - { label: Brouillons, field: draft, pattern: true }
+      - { label: Publiés, field: draft, pattern: false }
+    fields:
+      - { label: Titre, name: title, widget: string }
+      - { label: Date de publication, name: date, widget: datetime }
+      - label: Description
+        name: description
+        widget: text
+        hint: "1 à 2 phrases. Affichée sur la liste des articles et dans Google."
+      - { label: Image de couverture, name: cover, widget: image, required: false, hint: "Format paysage conseillé (1200 × 630), en JPG ou WebP." }
+      - { label: Description de l'image, name: coverAlt, widget: string, required: false, hint: "Pour les personnes malvoyantes et le référencement. Ex. : « Cuisine rénovée en bois clair »." }
+      - { label: Brouillon, name: draft, widget: boolean, default: true, hint: "Cocher = invisible sur le site." }
+      - { label: Contenu, name: body, widget: markdown }
+
+  - name: pages
+    label: Pages du site
+    label_singular: Page
+    description: Textes des pages principales.
+    editor:
+      preview: true
+    files:
+      - label: Accueil
+        name: accueil
+        file: src/content/pages/accueil.md
+        fields:
+          - { label: Petit titre, name: eyebrow, widget: string, required: false }
+          - { label: Grand titre, name: title, widget: string }
+          - { label: Phrase d'accroche, name: intro, widget: text, required: false }
+          - { label: Description (Google), name: description, widget: text }
+          - { label: Image, name: image, widget: image, required: false }
+          - { label: Description de l'image, name: imageAlt, widget: string, required: false }
+          - label: Bouton principal
+            name: cta
+            widget: object
+            required: false
+            fields:
+              - { label: Texte, name: label, widget: string }
+              - { label: Lien, name: href, widget: string, default: /contact/ }
+          - { label: Texte complémentaire, name: body, widget: markdown, required: false }
+
+      - label: À propos
+        name: a-propos
+        file: src/content/pages/a-propos.md
+        fields:
+          - { label: Petit titre, name: eyebrow, widget: string, required: false }
+          - { label: Titre, name: title, widget: string }
+          - { label: Introduction, name: intro, widget: text, required: false }
+          - { label: Description (Google), name: description, widget: text }
+          - { label: Photo, name: image, widget: image, required: false }
+          - { label: Description de la photo, name: imageAlt, widget: string, required: false }
+          - { label: Contenu, name: body, widget: markdown }
+
+      - label: Services & réalisations
+        name: services
+        file: src/content/pages/services.md
+        fields:
+          - { label: Petit titre, name: eyebrow, widget: string, required: false }
+          - { label: Titre, name: title, widget: string }
+          - { label: Introduction, name: intro, widget: text, required: false }
+          - { label: Description (Google), name: description, widget: text }
+          - { label: Image, name: image, widget: image, required: false }
+          - { label: Description de l'image, name: imageAlt, widget: string, required: false }
+          - label: Services
+            name: services
+            widget: list
+            label_singular: service
+            summary: "{{fields.title}}"
+            fields:
+              - { label: Nom du service, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+          - { label: Réalisations / contenu, name: body, widget: markdown, required: false }
+
+      - label: Contact
+        name: contact
+        file: src/content/pages/contact.md
+        fields:
+          - { label: Petit titre, name: eyebrow, widget: string, required: false }
+          - { label: Titre, name: title, widget: string }
+          - { label: Introduction, name: intro, widget: text, required: false }
+          - { label: Description (Google), name: description, widget: text }
+          - { label: Texte complémentaire (horaires…), name: body, widget: markdown, required: false }

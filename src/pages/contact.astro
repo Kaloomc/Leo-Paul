@@ -1,0 +1,71 @@
+---
+import { getEntry, render } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+import { CONTACT, SOCIALS } from '../consts';
+
+const page = await getEntry('pages', 'contact');
+if (!page) throw new Error('src/content/pages/contact.md est introuvable');
+const { Content } = await render(page);
+const socials = SOCIALS.filter((s) => s.url);
+---
+
+<PageLayout {...page.data}>
+  <div class="contact">
+    <!-- Formulaire géré par Netlify Forms (détecté automatiquement au déploiement) -->
+    <form name="contact" method="POST" action="/merci/" data-netlify="true" netlify-honeypot="bot-field" class="form">
+      <input type="hidden" name="form-name" value="contact" />
+      <p class="sr-only"><label>Ne pas remplir : <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+
+      <div class="field">
+        <label for="name">Nom</label>
+        <input id="name" name="name" type="text" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="6" required></textarea>
+      </div>
+      <p class="muted small">
+        Vos données servent uniquement à répondre à votre message.
+        Voir les <a href="/mentions-legales/">mentions légales</a>.
+      </p>
+      <button class="btn" type="submit">Envoyer</button>
+    </form>
+
+    <aside class="contact__info" aria-label="Coordonnées">
+      <h2>Coordonnées</h2>
+      <p><strong>E-mail</strong><br /><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></p>
+      {CONTACT.phone && <p><strong>Téléphone</strong><br /><a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`}>{CONTACT.phone}</a></p>}
+      {CONTACT.city && <p><strong>Localisation</strong><br />{CONTACT.city}</p>}
+      {socials.length > 0 && (
+        <p><strong>Réseaux</strong><br />
+          {socials.map((s, i) => <>{i > 0 && ' · '}<a href={s.url} rel="noopener noreferrer" target="_blank">{s.label}</a></>)}
+        </p>
+      )}
+      <Content />
+    </aside>
+  </div>
+</PageLayout>
+
+<style>
+  .contact { display: grid; gap: 2.5rem; }
+  @media (min-width: 900px) { .contact { grid-template-columns: 3fr 2fr; } }
+  .form { display: grid; gap: 1.1rem; }
+  .field { display: grid; gap: 0.35rem; }
+  label { font-weight: 600; font-size: 0.95rem; }
+  input, textarea {
+    font: inherit; color: var(--c-text); background: var(--c-surface);
+    border: 1px solid var(--c-border); border-radius: 8px; padding: 0.7rem 0.85rem; width: 100%;
+  }
+  input:focus, textarea:focus { outline: 3px solid var(--c-accent-soft); border-color: var(--c-accent); }
+  .small { font-size: 0.875rem; margin: 0; }
+  .form .btn { justify-self: start; }
+  .contact__info {
+    background: var(--c-surface); border: 1px solid var(--c-border);
+    border-radius: var(--radius); padding: 1.5rem; align-self: start;
+  }
+  .contact__info h2 { font-size: 1.3rem; }
+</style>

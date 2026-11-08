@@ -1,0 +1,63 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  updated?: Date;
+  cover?: string;
+  coverAlt?: string;
+}
+
+const { title, description, date, updated, cover, coverAlt } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} image={cover} type="article" publishedTime={date}>
+  <article class="section">
+    <div class="container article">
+      <header class="article__header">
+        <p class="eyebrow"><a href="/blog/">← Tous les articles</a></p>
+        <h1>{title}</h1>
+        <p class="muted article__meta">
+          Publié le <FormattedDate date={date} />
+          {updated && <> · mis à jour le <FormattedDate date={updated} /></>}
+        </p>
+      </header>
+
+      {cover && (
+        <img
+          class="article__cover"
+          src={cover}
+          alt={coverAlt ?? ''}
+          width="1200"
+          height="630"
+          fetchpriority="high"
+          decoding="async"
+        />
+      )}
+
+      <div class="prose article__body">
+        <slot />
+      </div>
+
+      <footer class="article__footer">
+        <a class="btn btn--ghost" href="/blog/">← Retour au blog</a>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article { max-width: 48rem; }
+  .article__header { margin-bottom: 2rem; }
+  .article__header .eyebrow a { text-decoration: none; }
+  .article__meta { font-size: 0.95rem; }
+  .article__cover {
+    width: 100%; aspect-ratio: 1200 / 630; object-fit: cover;
+    border-radius: var(--radius); margin-bottom: 2.5rem;
+  }
+  .article__body { margin: 0 auto; }
+  .article__footer { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--c-border); }
+</style>

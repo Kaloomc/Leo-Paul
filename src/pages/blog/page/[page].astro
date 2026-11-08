@@ -1,0 +1,18 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BlogListing from '../../../components/BlogListing.astro';
+import { getPublishedPosts } from '../../../lib/posts';
+import { POSTS_PER_PAGE } from '../../../consts';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = await getPublishedPosts();
+  // La page 1 est servie par /blog/ : on ne génère ici que les pages 2+
+  return paginate(posts, { pageSize: POSTS_PER_PAGE }).filter((p) => p.props.page.currentPage > 1);
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+// Le lien « précédent » de la page 2 doit pointer vers /blog/
+if (page.currentPage === 2) page.url.prev = '/blog/';
+---
+
+<BlogListing page={page} />

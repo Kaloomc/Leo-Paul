@@ -1,0 +1,58 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleGrid from '../components/ArticleGrid.astro';
+import { getPublishedPosts } from '../lib/posts';
+
+const page = await getEntry('pages', 'accueil');
+if (!page) throw new Error('src/content/pages/accueil.md est introuvable');
+const { Content } = await render(page);
+const latest = (await getPublishedPosts()).slice(0, 3);
+const { title, description, eyebrow, intro, cta, image, imageAlt } = page.data;
+---
+
+<BaseLayout description={description} image={image}>
+  <section class="hero">
+    <div class:list={['container', 'hero__inner', { 'has-image': !!image }]}>
+      <div>
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <h1>{title}</h1>
+        {intro && <p class="hero__lead muted">{intro}</p>}
+        <div class="prose"><Content /></div>
+        <div class="hero__actions">
+          {cta && <a class="btn" href={cta.href}>{cta.label}</a>}
+          <a class="btn btn--ghost" href="/services/">Découvrir les services</a>
+        </div>
+      </div>
+      {image && (
+        <img src={image} alt={imageAlt ?? ''} width="800" height="800" fetchpriority="high" decoding="async" />
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Derniers articles</h2>
+        <a href="/blog/">Voir tout le blog →</a>
+      </div>
+      <ArticleGrid posts={latest} headingLevel="h3" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero { padding: 3.5rem 0 1rem; }
+  @media (min-width: 768px) { .hero { padding: 6rem 0 2rem; } }
+  .hero__inner { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 900px) { .hero__inner.has-image { grid-template-columns: 3fr 2fr; } }
+  .hero__inner > div { max-width: 46rem; }
+  .hero__inner img { border-radius: var(--radius); aspect-ratio: 1; object-fit: cover; width: 100%; }
+  .hero__lead { font-size: clamp(1.1rem, 2.2vw, 1.35rem); }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+  }
+  .section-head h2 { margin: 0; }
+</style>

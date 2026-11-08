@@ -1,0 +1,27 @@
+---
+import type { Page } from 'astro';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticleGrid from './ArticleGrid.astro';
+import Pagination from './Pagination.astro';
+
+interface Props { page: Page<CollectionEntry<'blog'>> }
+const { page } = Astro.props;
+const title = page.currentPage > 1 ? `Blog — page ${page.currentPage}` : 'Blog';
+---
+
+<BaseLayout title={title} description="Tous les articles du blog : actualités, projets et conseils.">
+  <section class="section">
+    <div class="container">
+      <p class="eyebrow">Le blog</p>
+      <h1>Articles</h1>
+      <p class="muted lead">Actualités, projets récents et conseils.</p>
+      <ArticleGrid posts={page.data} />
+      <Pagination current={page.currentPage} last={page.lastPage} prevUrl={page.url.prev} nextUrl={page.url.next} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .lead { margin-bottom: 2.5rem; font-size: 1.15rem; }
+</style>
