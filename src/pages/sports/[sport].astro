@@ -1,0 +1,78 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleGrid from '../../components/ArticleGrid.astro';
+import { getPublishedPosts, getSports, type Sport } from '../../lib/posts';
+
+export const getStaticPaths = (async () => {
+  const sports = await getSports();
+  return sports.map((sport) => ({ params: { sport: sport.id }, props: { sport, all: sports } }));
+}) satisfies GetStaticPaths;
+
+const { sport, all } = Astro.props as { sport: Sport; all: Sport[] };
+const { name, emoji, color, tagline, cover } = sport.data;
+const posts = (await getPublishedPosts()).filter((p) => p.data.sport === sport.id);
+const sportMap = new Map(all.map((s) => [s.id, s]));
+---
+
+<BaseLayout title={name} description={`${name} : ${tagline}`} accent={color} image={cover}>
+  <section class="shero">
+    {cover && <img class="shero__img" src={cover} alt="" fetchpriority="high" />}
+    <div class="container shero__inner">
+      <a class="kicker shero__back" href="/sports/">← Tous les sports</a>
+      <h1 class="display shero__title">
+        <span class="shero__emoji" aria-hidden="true">{emoji}</span>
+        <span>{name}</span>
+      </h1>
+      <div class="shero__row">
+        <p class="shero__tagline">{tagline}</p>
+        <p class="shero__count"><span class="display">{posts.length}</span> article{posts.length > 1 ? 's' : ''}</p>
+      </div>
+    </div>
+    <p class="shero__ghost display" aria-hidden="true">{name}</p>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <ArticleGrid posts={posts} sports={sportMap} headingLevel="h2" />
+
+      <nav class="others" aria-label="Autres sports">
+        <p class="kicker">Autres sports</p>
+        <ul>
+          {all.filter((s) => s.id !== sport.id).map((s) => (
+            <li><a class="chip" style={`--sport:${s.data.color}`} href={`/sports/${s.id}/`}>{s.data.emoji} {s.data.name}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .shero {
+    position: relative; overflow: hidden; isolation: isolate;
+    padding: clamp(3rem, 9vw, 7rem) 0 clamp(2.5rem, 6vw, 4.5rem);
+    background:
+      radial-gradient(70% 90% at 90% 0%, color-mix(in srgb, var(--sport) 45%, transparent), transparent 65%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--sport) 10%, var(--bg)), var(--bg));
+    border-bottom: 1px solid var(--line);
+  }
+  .shero__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; opacity: 0.35; }
+  .shero__inner { position: relative; }
+  .shero__back { text-decoration: none; }
+  .shero__back:hover { color: var(--text); }
+  .shero__title { display: flex; align-items: center; gap: 0.15em; margin: 0; font-size: clamp(4rem, 16vw, 14rem); }
+  .shero__emoji { font-size: 0.6em; transform: rotate(-10deg); display: inline-block; animation: bob 4s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: rotate(6deg) translateY(-6%); } }
+  .shero__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1.5rem; margin-top: 1.5rem; }
+  .shero__tagline { font-size: clamp(1.1rem, 2vw, 1.4rem); max-width: 36ch; margin: 0; color: #e2e2dc; }
+  .shero__count { margin: 0; display: flex; align-items: baseline; gap: 0.5rem; font-weight: 600; color: var(--muted); }
+  .shero__count .display { font-size: 4rem; color: var(--sport); }
+  .shero__ghost {
+    position: absolute; right: -2vw; bottom: -0.18em; z-index: -1; margin: 0; white-space: nowrap;
+    font-size: clamp(8rem, 30vw, 26rem); color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--sport) 35%, transparent);
+  }
+  .others { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--line); }
+  .others ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; }
+  @media (prefers-reduced-motion: reduce) { .shero__emoji { animation: none; } }
+</style>

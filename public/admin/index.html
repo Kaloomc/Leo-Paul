@@ -4,15 +4,107 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Administration</title>
+    <title>Espace rédaction</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root { color-scheme: dark; --accent: #d4ff3a; --bg: #0a0a0b; --surface: #17171a; --line: rgb(255 255 255 / 0.14); --muted: #a3a3ab; }
+      #login {
+        position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px;
+        background: radial-gradient(60% 60% at 85% 0%, rgb(212 255 58 / 0.18), transparent 70%), var(--bg);
+        color: #f4f4f0; font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      #login[hidden] { display: none; }
+      .box { width: min(100%, 380px); display: grid; gap: 14px; }
+      .mark {
+        width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 8px;
+        background: var(--accent); color: var(--bg); font: 900 26px/1 'Arial Narrow', Impact, sans-serif; transform: skewX(-8deg);
+      }
+      h1 { margin: 0; font: 900 44px/0.9 'Arial Narrow', Impact, sans-serif; text-transform: uppercase; letter-spacing: -0.01em; }
+      .sub { margin: 0 0 10px; color: var(--muted); }
+      label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
+      input {
+        font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line);
+        border-radius: 12px; padding: 13px 14px;
+      }
+      input:focus { outline: none; border-color: var(--accent); }
+      button {
+        font: inherit; font-weight: 700; margin-top: 6px; padding: 14px; border: 0; border-radius: 999px;
+        background: var(--accent); color: var(--bg); cursor: pointer;
+      }
+      button:disabled { opacity: 0.6; cursor: progress; }
+      .err { min-height: 1.5em; margin: 0; color: #ff6b6b; font-size: 14px; }
+      .back { color: var(--muted); font-size: 14px; text-align: center; }
+      .back:hover { color: #fff; }
+    </style>
   </head>
   <body>
-    <!-- Version épinglée : mettre à jour volontairement après avoir testé -->
-    <script src="https://unpkg.com/decap-cms@3.17.3/dist/decap-cms.js"></script>
+    <!-- Écran de connexion (identifiant + mot de passe) affiché avant Decap CMS -->
+    <div id="login" hidden>
+      <form class="box" id="login-form">
+        <div class="mark" aria-hidden="true">LP</div>
+        <h1>Espace rédaction</h1>
+        <p class="sub">Connecte-toi pour écrire et publier des articles.</p>
+        <label>Identifiant <input name="username" autocomplete="username" autocapitalize="none" required /></label>
+        <label>Mot de passe <input name="password" type="password" autocomplete="current-password" required /></label>
+        <button type="submit">Se connecter</button>
+        <p class="err" id="login-error" role="alert"></p>
+        <a class="back" href="/">← Retour au site</a>
+      </form>
+    </div>
+
     <script>
-      // Style de la prévisualisation dans l'éditeur, proche du site
-      CMS.registerPreviewStyle('/admin/preview.css');
+      (function () {
+        var DECAP = 'https://unpkg.com/decap-cms@3.17.3/dist/decap-cms.js'; // version épinglée
+        var KEY = 'decap-cms-user';
+        var isLocal = ['localhost', '127.0.0.1'].indexOf(location.hostname) !== -1;
+
+        function hasSession() {
+          try { return !!JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return false; }
+        }
+
+        function startCms() {
+          document.getElementById('login').hidden = true;
+          window.CMS_MANUAL_INIT = true;
+          var s = document.createElement('script');
+          s.src = DECAP;
+          s.onload = function () {
+            CMS.registerPreviewStyle('/admin/preview.css');
+            // L'authentification passe par la fonction /api/cms-auth de ce site
+            CMS.init({ config: { backend: { base_url: location.origin, auth_endpoint: 'api/cms-auth' } } });
+            // Après une déconnexion depuis Decap, on revient à l'écran de connexion
+            if (!isLocal) setInterval(function () { if (!hasSession()) location.reload(); }, 1500);
+          };
+          document.body.appendChild(s);
+        }
+
+        if (isLocal || hasSession()) return startCms();
+
+        var login = document.getElementById('login');
+        var form = document.getElementById('login-form');
+        var error = document.getElementById('login-error');
+        login.hidden = false;
+        form.username.focus();
+
+        form.addEventListener('submit', function (ev) {
+          ev.preventDefault();
+          error.textContent = '';
+          var btn = form.querySelector('button');
+          btn.disabled = true;
+          fetch('/api/cms-auth', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ username: form.username.value, password: form.password.value }),
+          })
+            .then(function (res) { return res.json().catch(function () { return {}; }).then(function (d) { return { ok: res.ok, d: d }; }); })
+            .then(function (r) {
+              if (!r.ok || !r.d.token) throw new Error(r.d.error || 'Connexion impossible.');
+              localStorage.setItem(KEY, JSON.stringify({ token: r.d.token, backendName: 'github' }));
+              form.password.value = '';
+              startCms();
+            })
+            .catch(function (e) { error.textContent = e.message; btn.disabled = false; });
+        });
+      })();
     </script>
   </body>
 </html>

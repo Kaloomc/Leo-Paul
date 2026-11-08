@@ -1,18 +1,20 @@
 ---
-title: À propos
-description: Qui je suis, mon parcours et ma façon de travailler.
-eyebrow: Qui suis-je ?
-intro: Quelques mots pour faire connaissance.
+title: "Derrière *le blog*"
+description: Qui est Leo-Paul, et pourquoi ce blog de sport.
+eyebrow: À propos
+intro: Un passionné de sport qui partage ce qu'il vit, teste et analyse.
 ---
 
-Texte de présentation à rédiger : parcours, passions, ce qui rend le travail unique…
+Salut, moi c'est **Leo-Paul**. Texte de présentation à personnaliser : parcours sportif, sports pratiqués, objectifs…
 
-## Mon parcours
+## Pourquoi ce blog ?
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam.
+Pour partager des contenus **honnêtes et concrets** : ce qui marche à l'entraînement, ce qui se passe sur les terrains, et les histoires qui donnent envie de bouger.
 
-## Ma façon de travailler
+## Mes sports
 
-- **Écoute** : comprendre vos besoins avant tout
-- **Qualité** : un travail soigné, dans les délais
-- **Transparence** : des devis clairs, sans surprise
+- ⚽ Football
+- 🏃 Running
+- 🏀 Basket
+- 🎾 Tennis
+- 💪 Fitness

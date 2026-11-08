@@ -1,49 +1,75 @@
 ---
 import { SITE_TITLE, CONTACT, SOCIALS } from '../consts';
-const year = new Date().getFullYear();
+import { getSports } from '../lib/posts';
+const sports = await getSports();
 const socials = SOCIALS.filter((s) => s.url);
+const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
-  <div class="container site-footer__inner">
-    <div>
-      <p class="site-footer__brand">{SITE_TITLE}</p>
-      <p class="muted"><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></p>
+<footer class="ftr">
+  <div class="container">
+    <div class="ftr__cta" data-reveal>
+      <p class="display h-md">Une idée d'article&nbsp;?</p>
+      <a class="btn" href="/contact/">Écris-moi <span class="arrow" aria-hidden="true">→</span></a>
     </div>
 
-    {socials.length > 0 && (
-      <ul class="site-footer__links" aria-label="Réseaux sociaux">
-        {socials.map((s) => (
-          <li><a href={s.url} rel="noopener noreferrer" target="_blank">{s.label}</a></li>
-        ))}
-      </ul>
-    )}
-
-    <ul class="site-footer__links" aria-label="Liens utiles">
-      <li><a href="/mentions-legales/">Mentions légales</a></li>
-      <li><a href="/rss.xml">Flux RSS</a></li>
-    </ul>
+    <div class="ftr__grid">
+      <div>
+        <h2 class="ftr__title">Sports</h2>
+        <ul>
+          {sports.map((s) => <li><a href={`/sports/${s.id}/`}>{s.data.emoji} {s.data.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr__title">Le blog</h2>
+        <ul>
+          <li><a href="/blog/">Tous les articles</a></li>
+          <li><a href="/a-propos/">À propos</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/rss.xml">Flux RSS</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="ftr__title">Suivre</h2>
+        <ul>
+          {socials.map((s) => <li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}
+          <li><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
-  <div class="container">
-    <p class="site-footer__copy muted">© {year} {SITE_TITLE}. Tous droits réservés.</p>
+
+  <p class="ftr__wordmark display" aria-hidden="true">{SITE_TITLE}</p>
+
+  <div class="container ftr__bottom">
+    <span>© {year} {SITE_TITLE}</span>
+    <span><a href="/mentions-legales/">Mentions légales</a> · <a href="/admin/">Espace rédaction</a></span>
   </div>
 </footer>
 
 <style>
-  .site-footer {
-    margin-top: 4rem; padding: 2.5rem 0 1.5rem;
-    border-top: 1px solid var(--c-border); background: var(--c-surface);
-    font-size: 0.95rem;
+  .ftr { margin-top: 2rem; border-top: 1px solid var(--line); overflow: hidden; }
+  .ftr__cta {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem;
+    padding: 4rem 0; border-bottom: 1px solid var(--line);
   }
-  .site-footer__inner {
-    display: grid; gap: 1.5rem;
+  .ftr__cta p { margin: 0; }
+  .ftr__grid { display: grid; gap: 2rem; padding: 3rem 0; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+  .ftr__title { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 1rem; }
+  .ftr ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .ftr ul a { text-decoration: none; transition: color 0.2s; }
+  .ftr ul a:hover { color: var(--accent); }
+  .ftr__wordmark {
+    margin: 0; padding: 0 0.5rem; text-align: center; white-space: nowrap;
+    font-size: clamp(5rem, 24vw, 22rem); line-height: 0.78;
+    color: transparent; -webkit-text-stroke: 1px var(--line-strong);
+    user-select: none; transform: translateY(8%);
   }
-  @media (min-width: 768px) {
-    .site-footer__inner { grid-template-columns: 2fr 1fr 1fr; }
+  .ftr__bottom {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem;
+    padding-top: 1.25rem; padding-bottom: 1.5rem; border-top: 1px solid var(--line);
+    font-size: 0.85rem; color: var(--muted); position: relative; background: var(--bg);
   }
-  .site-footer__brand { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; margin: 0 0 0.25rem; }
-  .site-footer__links { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; }
-  .site-footer__links a { color: var(--c-text); }
-  .site-footer__links a:hover { color: var(--c-accent); }
-  .site-footer__copy { margin: 2rem 0 0; font-size: 0.85rem; }
+  .ftr__bottom a { text-decoration: none; }
+  .ftr__bottom a:hover { color: var(--text); }
 </style>

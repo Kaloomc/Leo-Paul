@@ -1,27 +1,35 @@
 ---
 import type { Page } from 'astro';
-import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from './PageHero.astro';
 import ArticleGrid from './ArticleGrid.astro';
 import Pagination from './Pagination.astro';
+import { getSports, type Post } from '../lib/posts';
 
-interface Props { page: Page<CollectionEntry<'blog'>> }
+interface Props { page: Page<Post> }
 const { page } = Astro.props;
-const title = page.currentPage > 1 ? `Blog — page ${page.currentPage}` : 'Blog';
+const sports = await getSports();
+const sportMap = new Map(sports.map((s) => [s.id, s]));
+const title = page.currentPage > 1 ? `Articles — page ${page.currentPage}` : 'Articles';
 ---
 
-<BaseLayout title={title} description="Tous les articles du blog : actualités, projets et conseils.">
-  <section class="section">
-    <div class="container">
-      <p class="eyebrow">Le blog</p>
-      <h1>Articles</h1>
-      <p class="muted lead">Actualités, projets récents et conseils.</p>
-      <ArticleGrid posts={page.data} />
-      <Pagination current={page.currentPage} last={page.lastPage} prevUrl={page.url.prev} nextUrl={page.url.next} />
-    </div>
+<BaseLayout title={title} description="Tous les articles du blog sport : analyses, entraînements et récits.">
+  <PageHero eyebrow="Le blog" title="Tous les *articles*" intro={`${page.total} article${page.total > 1 ? 's' : ''} — du terrain à l'analyse.`}>
+    <ul class="filters" aria-label="Filtrer par sport">
+      <li><a class="chip is-on" href="/blog/" aria-current="page">Tous</a></li>
+      {sports.map((s) => (
+        <li><a class="chip" style={`--sport:${s.data.color}`} href={`/sports/${s.id}/`}>{s.data.emoji} {s.data.name}</a></li>
+      ))}
+    </ul>
+  </PageHero>
+  <section class="container list">
+    <ArticleGrid posts={page.data} sports={sportMap} headingLevel="h2" />
+    <Pagination current={page.currentPage} last={page.lastPage} prevUrl={page.url.prev} nextUrl={page.url.next} />
   </section>
 </BaseLayout>
 
 <style>
-  .lead { margin-bottom: 2.5rem; font-size: 1.15rem; }
+  .filters { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 2rem 0 0; }
+  .is-on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .list { padding-bottom: 5rem; }
 </style>

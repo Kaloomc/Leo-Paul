@@ -1,0 +1,26 @@
+---
+import { displayTitle } from '../lib/posts';
+interface Props { eyebrow?: string; title: string; intro?: string; big?: boolean }
+const { eyebrow, title, intro, big = false } = Astro.props;
+---
+
+<section class="phero">
+  <div class="phero__glow" aria-hidden="true"></div>
+  <div class="container">
+    {eyebrow && <p class="kicker">{eyebrow}</p>}
+    <h1 class:list={['display', big ? 'h-xl' : 'h-lg']} set:html={displayTitle(title)} />
+    {intro && <p class="phero__intro">{intro}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .phero { position: relative; padding: clamp(3rem, 9vw, 7rem) 0 clamp(2.5rem, 5vw, 4rem); overflow: hidden; }
+  .phero__glow {
+    position: absolute; inset: -40% -10% auto auto; width: 70vw; aspect-ratio: 1; z-index: -1;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--sport) 22%, transparent), transparent);
+    filter: blur(20px);
+  }
+  h1 { margin: 0; }
+  .phero__intro { font-size: clamp(1.1rem, 2vw, 1.35rem); color: var(--muted); max-width: 46ch; margin: 1.5rem 0 0; }
+</style>

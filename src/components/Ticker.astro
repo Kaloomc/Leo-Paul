@@ -1,0 +1,44 @@
+---
+// Bandeau défilant façon « fil info »
+interface Props { items: { label: string; href?: string; emoji?: string }[] }
+const { items } = Astro.props;
+---
+
+<div class="ticker" role="region" aria-label="Derniers articles">
+  <div class="ticker__track">
+    {[0, 1].map((copy) => (
+      <ul aria-hidden={copy === 1 ? 'true' : undefined}>
+        {items.map((it) => (
+          <li>
+            <span class="ticker__dot" aria-hidden="true">{it.emoji ?? '●'}</span>
+            {it.href ? <a href={it.href} tabindex={copy === 1 ? -1 : undefined}>{it.label}</a> : it.label}
+          </li>
+        ))}
+      </ul>
+    ))}
+  </div>
+</div>
+
+<style>
+  .ticker {
+    position: relative; z-index: 2; overflow: hidden;
+    background: var(--accent); color: var(--accent-ink);
+    transform: rotate(-2deg) scale(1.04); margin: 1rem 0;
+    border-block: 2px solid var(--accent-ink);
+  }
+  .ticker__track { display: flex; width: max-content; animation: scroll 45s linear infinite; }
+  .ticker:hover .ticker__track { animation-play-state: paused; }
+  ul { display: flex; list-style: none; margin: 0; padding: 0; }
+  li {
+    display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.5rem; white-space: nowrap;
+    font-family: var(--font-display); font-weight: 900; font-stretch: 72%; text-transform: uppercase;
+    font-size: clamp(1.1rem, 2.2vw, 1.5rem); line-height: 1;
+  }
+  li a { text-decoration: none; }
+  li a:hover { text-decoration: underline; text-decoration-thickness: 3px; }
+  @keyframes scroll { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ticker__track { animation: none; }
+    .ticker { overflow-x: auto; }
+  }
+</style>

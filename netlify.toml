@@ -5,9 +5,22 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# L'admin ne doit pas être indexé ni mis en cache trop longtemps
+[functions]
+  directory = "netlify/functions"
+
+# En-têtes de sécurité pour tout le site
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# L'admin ne doit être ni indexée, ni intégrée dans une autre page, ni mise en cache
 [[headers]]
   for = "/admin/*"
   [headers.values]
     X-Robots-Tag = "noindex"
+    X-Frame-Options = "DENY"
     Cache-Control = "no-cache"
+

@@ -2,17 +2,26 @@
 import type { GetStaticPaths } from 'astro';
 import { render } from 'astro:content';
 import ArticleLayout from '../../layouts/ArticleLayout.astro';
-import { getPublishedPosts } from '../../lib/posts';
+import { getPublishedPosts, getSportMap } from '../../lib/posts';
 
 export const getStaticPaths = (async () => {
   const posts = await getPublishedPosts();
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  return posts.map((post) => {
+    // « À lire aussi » : même sport d'abord, puis les plus récents
+    const others = posts.filter((p) => p.id !== post.id);
+    const related = [
+      ...others.filter((p) => p.data.sport === post.data.sport),
+      ...others.filter((p) => p.data.sport !== post.data.sport),
+    ].slice(0, 3);
+    return { params: { slug: post.id }, props: { post, related } };
+  });
 }) satisfies GetStaticPaths;
 
-const { post } = Astro.props;
+const { post, related } = Astro.props;
+const sports = await getSportMap();
 const { Content } = await render(post);
 ---
 
-<ArticleLayout {...post.data}>
+<ArticleLayout post={post} sport={sports.get(post.data.sport)} related={related} sports={sports}>
   <Content />
 </ArticleLayout>

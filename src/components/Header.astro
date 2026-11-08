@@ -1,89 +1,144 @@
 ---
-import { SITE_TITLE, NAV } from '../consts';
-
+import { SITE_TITLE, SITE_TAGLINE, NAV } from '../consts';
 const path = Astro.url.pathname;
-const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+const isActive = (href: string) => path.startsWith(href);
 ---
 
-<header class="site-header">
-  <div class="container site-header__inner">
-    <a class="brand" href="/">{SITE_TITLE}</a>
+<header class="hdr" transition:persist="header">
+  <div class="container hdr__inner">
+    <a class="logo" href="/" aria-label={`${SITE_TITLE} — accueil`}>
+      <span class="logo__mark" aria-hidden="true">LP</span>
+      <span class="logo__text">
+        <span class="logo__name">{SITE_TITLE}</span>
+        <span class="logo__tag">{SITE_TAGLINE}</span>
+      </span>
+    </a>
 
-    <button class="menu-toggle" aria-expanded="false" aria-controls="nav-principale">
-      <span class="sr-only">Ouvrir le menu</span>
-      <span class="menu-toggle__bar" aria-hidden="true"></span>
-    </button>
-
-    <nav id="nav-principale" aria-label="Navigation principale">
+    <nav class="nav" id="nav" aria-label="Navigation principale">
       <ul>
-        {NAV.map((item) => (
-          <li>
+        {NAV.map((item, i) => (
+          <li style={`--i:${i}`}>
             <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              <span class="nav__num" aria-hidden="true">0{i + 1}</span>
               {item.label}
             </a>
           </li>
         ))}
       </ul>
     </nav>
+
+    <button class="burger" aria-expanded="false" aria-controls="nav">
+      <span class="sr-only">Menu</span>
+      <span class="burger__lines" aria-hidden="true"></span>
+    </button>
   </div>
 </header>
 
 <script>
-  const btn = document.querySelector<HTMLButtonElement>('.menu-toggle');
-  const nav = document.getElementById('nav-principale');
-  btn?.addEventListener('click', () => {
-    const open = btn.getAttribute('aria-expanded') === 'true';
-    btn.setAttribute('aria-expanded', String(!open));
-    nav?.classList.toggle('is-open', !open);
-  });
+  function initHeader() {
+    const header = document.querySelector<HTMLElement>('.hdr');
+    const btn = document.querySelector<HTMLButtonElement>('.burger');
+    const nav = document.getElementById('nav');
+    if (!header || !btn || !nav) return;
+
+    const setOpen = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      header.classList.toggle('is-open', open);
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+    btn.onclick = () => setOpen(btn.getAttribute('aria-expanded') !== 'true');
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+
+    // Lien actif (le header est conservé entre les pages)
+    const update = () => {
+      setOpen(false);
+      nav.querySelectorAll('a').forEach((a) => {
+        const active = location.pathname.startsWith(a.getAttribute('href') || '#');
+        if (active) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      });
+    };
+    document.addEventListener('astro:after-swap', update);
+
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 12);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+  initHeader();
 </script>
 
 <style>
-  .site-header {
-    position: sticky; top: 0; z-index: 50;
-    background: color-mix(in srgb, var(--c-bg) 88%, transparent);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--c-border);
+  .hdr {
+    position: sticky; top: 0; z-index: 60;
+    transition: background 0.3s, border-color 0.3s, backdrop-filter 0.3s;
+    border-bottom: 1px solid transparent;
   }
-  .site-header__inner {
-    display: flex; align-items: center; justify-content: space-between;
-    min-height: 4rem; gap: 1rem; position: relative;
+  .hdr.is-scrolled {
+    background: rgb(10 10 11 / 0.78); backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom-color: var(--line);
   }
-  .brand {
-    font-family: var(--font-head); font-size: 1.35rem; font-weight: 700;
-    color: var(--c-text); text-decoration: none;
-  }
-  nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }
-  nav a {
-    display: block; padding: 0.5rem 0.85rem; border-radius: 999px;
-    color: var(--c-text); text-decoration: none; font-weight: 500;
-  }
-  nav a:hover { background: var(--c-accent-soft); color: var(--c-accent-hover); }
-  nav a[aria-current='page'] { color: var(--c-accent); background: var(--c-accent-soft); }
+  .hdr__inner { display: flex; align-items: center; justify-content: space-between; min-height: 4.5rem; gap: 1rem; }
 
-  .menu-toggle {
-    display: none; width: 44px; height: 44px; border: 0; background: transparent;
-    cursor: pointer; border-radius: 8px; color: var(--c-text);
+  .logo { display: inline-flex; align-items: center; gap: 0.7rem; text-decoration: none; position: relative; z-index: 2; }
+  .logo__mark {
+    display: grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 10px;
+    background: var(--accent); color: var(--accent-ink);
+    font-family: var(--font-display); font-weight: 900; font-stretch: 70%; font-size: 1.35rem;
+    transform: skewX(-8deg); transition: transform 0.4s var(--ease);
   }
-  .menu-toggle__bar, .menu-toggle__bar::before, .menu-toggle__bar::after {
-    display: block; width: 22px; height: 2px; background: currentColor; margin: 0 auto;
-    position: relative; transition: transform 0.2s;
-  }
-  .menu-toggle__bar::before, .menu-toggle__bar::after { content: ''; position: absolute; left: 0; }
-  .menu-toggle__bar::before { top: -7px; }
-  .menu-toggle__bar::after { top: 7px; }
-  .menu-toggle[aria-expanded='true'] .menu-toggle__bar { background: transparent; }
-  .menu-toggle[aria-expanded='true'] .menu-toggle__bar::before { transform: translateY(7px) rotate(45deg); }
-  .menu-toggle[aria-expanded='true'] .menu-toggle__bar::after { transform: translateY(-7px) rotate(-45deg); }
+  .logo:hover .logo__mark { transform: skewX(-8deg) rotate(-6deg) scale(1.06); }
+  .logo__text { display: grid; line-height: 1; }
+  .logo__name { font-family: var(--font-display); font-weight: 900; font-stretch: 72%; font-size: 1.45rem; text-transform: uppercase; }
+  .logo__tag { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-top: 3px; }
 
-  @media (max-width: 767px) {
-    .menu-toggle { display: block; }
-    nav {
-      display: none; position: absolute; top: 100%; left: 0; right: 0;
-      background: var(--c-bg); border-bottom: 1px solid var(--c-border); padding: 0.5rem 1rem 1rem;
+  .nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }
+  .nav a {
+    position: relative; display: inline-flex; align-items: baseline; gap: 0.35rem;
+    padding: 0.55rem 0.9rem; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+  }
+  .nav__num { font-size: 0.65rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .nav a::after {
+    content: ''; position: absolute; left: 0.9rem; right: 0.9rem; bottom: 0.3rem; height: 2px;
+    background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform 0.35s var(--ease);
+  }
+  .nav a:hover::after, .nav a[aria-current='page']::after { transform: scaleX(1); transform-origin: left; }
+  .nav a[aria-current='page'] { color: var(--accent); }
+
+  .burger {
+    display: none; position: relative; z-index: 2; width: 48px; height: 48px; border-radius: 50%;
+    border: 1px solid var(--line-strong); background: transparent; color: var(--text); cursor: pointer;
+  }
+  .burger__lines, .burger__lines::before, .burger__lines::after {
+    display: block; width: 18px; height: 2px; background: currentColor; margin: 0 auto; position: relative;
+    transition: transform 0.35s var(--ease), background 0.2s;
+  }
+  .burger__lines::before, .burger__lines::after { content: ''; position: absolute; left: 0; }
+  .burger__lines::before { top: -6px; }
+  .burger__lines::after { top: 6px; }
+  .is-open .burger__lines { background: transparent; }
+  .is-open .burger__lines::before { transform: translateY(6px) rotate(45deg); }
+  .is-open .burger__lines::after { transform: translateY(-6px) rotate(-45deg); }
+
+  @media (max-width: 799px) {
+    .burger { display: block; }
+    .nav {
+      position: fixed; inset: 0; z-index: 1; background: var(--bg);
+      display: flex; align-items: center; padding: 6rem 1.5rem 2rem;
+      clip-path: circle(0 at calc(100% - 2.6rem) 2.25rem);
+      transition: clip-path 0.6s var(--ease); visibility: hidden;
     }
-    nav.is-open { display: block; }
-    nav ul { flex-direction: column; }
-    nav a { padding: 0.75rem 1rem; }
+    .is-open .nav { clip-path: circle(150% at calc(100% - 2.6rem) 2.25rem); visibility: visible; }
+    .nav ul { flex-direction: column; gap: 0.25rem; width: 100%; }
+    .nav a {
+      font-family: var(--font-display); font-weight: 900; font-stretch: 68%; text-transform: uppercase;
+      font-size: clamp(3rem, 15vw, 5rem); line-height: 1; padding: 0.3rem 0; gap: 1rem;
+    }
+    .nav__num { font-family: var(--font-body); font-size: 0.85rem; font-stretch: 100%; }
+    .nav a::after { display: none; }
+    .nav li { opacity: 0; transform: translateY(20px); transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+    .is-open .nav li { opacity: 1; transform: none; transition-delay: calc(0.15s + var(--i) * 60ms); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav, .nav li { transition: none !important; }
   }
 </style>

@@ -1,71 +1,97 @@
 ---
 import { getEntry, render } from 'astro:content';
-import PageLayout from '../layouts/PageLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 import { CONTACT, SOCIALS } from '../consts';
 
 const page = await getEntry('pages', 'contact');
 if (!page) throw new Error('src/content/pages/contact.md est introuvable');
 const { Content } = await render(page);
+const { title, description, eyebrow, intro } = page.data;
 const socials = SOCIALS.filter((s) => s.url);
 ---
 
-<PageLayout {...page.data}>
-  <div class="contact">
+<BaseLayout title={title.replace(/\*/g, '')} description={description}>
+  <PageHero eyebrow={eyebrow} title={title} intro={intro} />
+  <section class="container contact">
     <!-- Formulaire géré par Netlify Forms (détecté automatiquement au déploiement) -->
-    <form name="contact" method="POST" action="/merci/" data-netlify="true" netlify-honeypot="bot-field" class="form">
+    <form name="contact" method="POST" action="/merci/" data-netlify="true" netlify-honeypot="bot-field" class="form" data-reveal data-astro-reload>
       <input type="hidden" name="form-name" value="contact" />
       <p class="sr-only"><label>Ne pas remplir : <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
 
-      <div class="field">
-        <label for="name">Nom</label>
-        <input id="name" name="name" type="text" autocomplete="name" required />
+      <div class="row">
+        <div class="field">
+          <input id="name" name="name" type="text" autocomplete="name" placeholder=" " required />
+          <label for="name">Nom</label>
+        </div>
+        <div class="field">
+          <input id="email" name="email" type="email" autocomplete="email" placeholder=" " required />
+          <label for="email">E-mail</label>
+        </div>
       </div>
       <div class="field">
-        <label for="email">E-mail</label>
-        <input id="email" name="email" type="email" autocomplete="email" required />
+        <select id="subject" name="subject">
+          <option>Idée d'article</option>
+          <option>Partenariat</option>
+          <option>Question</option>
+          <option>Autre</option>
+        </select>
+        <label for="subject">Sujet</label>
       </div>
       <div class="field">
+        <textarea id="message" name="message" rows="6" placeholder=" " required></textarea>
         <label for="message">Message</label>
-        <textarea id="message" name="message" rows="6" required></textarea>
       </div>
       <p class="muted small">
-        Vos données servent uniquement à répondre à votre message.
-        Voir les <a href="/mentions-legales/">mentions légales</a>.
+        Tes données servent uniquement à te répondre. Voir les <a href="/mentions-legales/">mentions légales</a>.
       </p>
-      <button class="btn" type="submit">Envoyer</button>
+      <button class="btn" type="submit">Envoyer <span class="arrow" aria-hidden="true">→</span></button>
     </form>
 
-    <aside class="contact__info" aria-label="Coordonnées">
-      <h2>Coordonnées</h2>
-      <p><strong>E-mail</strong><br /><a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></p>
-      {CONTACT.phone && <p><strong>Téléphone</strong><br /><a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`}>{CONTACT.phone}</a></p>}
-      {CONTACT.city && <p><strong>Localisation</strong><br />{CONTACT.city}</p>}
+    <aside class="info" aria-label="Coordonnées" data-reveal style="--i:1">
+      <p class="kicker">Direct</p>
+      <a class="info__mail display" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+      {CONTACT.city && <p class="muted">📍 {CONTACT.city}</p>}
       {socials.length > 0 && (
-        <p><strong>Réseaux</strong><br />
-          {socials.map((s, i) => <>{i > 0 && ' · '}<a href={s.url} rel="noopener noreferrer" target="_blank">{s.label}</a></>)}
-        </p>
+        <ul class="info__socials">
+          {socials.map((s) => <li><a class="btn btn--ghost" href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}
+        </ul>
       )}
-      <Content />
+      <div class="prose"><Content /></div>
     </aside>
-  </div>
-</PageLayout>
+  </section>
+</BaseLayout>
 
 <style>
-  .contact { display: grid; gap: 2.5rem; }
-  @media (min-width: 900px) { .contact { grid-template-columns: 3fr 2fr; } }
-  .form { display: grid; gap: 1.1rem; }
-  .field { display: grid; gap: 0.35rem; }
-  label { font-weight: 600; font-size: 0.95rem; }
-  input, textarea {
-    font: inherit; color: var(--c-text); background: var(--c-surface);
-    border: 1px solid var(--c-border); border-radius: 8px; padding: 0.7rem 0.85rem; width: 100%;
+  .contact { display: grid; gap: 3rem; padding-bottom: 5rem; }
+  @media (min-width: 950px) { .contact { grid-template-columns: 3fr 2fr; } }
+  .form { display: grid; gap: 1rem; }
+  .row { display: grid; gap: 1rem; }
+  @media (min-width: 640px) { .row { grid-template-columns: 1fr 1fr; } }
+  .field { position: relative; display: flex; flex-direction: column-reverse; }
+  .field input, .field textarea, .field select {
+    font: inherit; color: var(--text); background: var(--surface);
+    border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+    padding: 1.6rem 1rem 0.6rem; width: 100%; transition: border-color 0.2s, background 0.2s;
   }
-  input:focus, textarea:focus { outline: 3px solid var(--c-accent-soft); border-color: var(--c-accent); }
-  .small { font-size: 0.875rem; margin: 0; }
+  .field select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 22px) 55%, calc(100% - 16px) 55%; background-size: 6px 6px; background-repeat: no-repeat; }
+  .field label {
+    position: absolute; left: 1rem; top: 1.1rem; color: var(--muted); pointer-events: none;
+    transition: transform 0.2s var(--ease), font-size 0.2s, color 0.2s;
+  }
+  .field :is(input, textarea):focus + label,
+  .field :is(input, textarea):not(:placeholder-shown) + label,
+  .field select + label { transform: translateY(-0.65rem); font-size: 0.75rem; color: var(--accent); }
+  .field :is(input, textarea, select):focus { outline: none; border-color: var(--accent); background: var(--surface-2); }
+  .small { font-size: 0.85rem; margin: 0; }
   .form .btn { justify-self: start; }
-  .contact__info {
-    background: var(--c-surface); border: 1px solid var(--c-border);
-    border-radius: var(--radius); padding: 1.5rem; align-self: start;
+
+  .info { align-self: start; padding: 2rem; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); }
+  .info__mail {
+    display: block; font-size: clamp(1.6rem, 3vw, 2.2rem); text-transform: none; text-decoration: none;
+    word-break: break-all; margin-bottom: 1.25rem;
   }
-  .contact__info h2 { font-size: 1.3rem; }
+  .info__mail:hover { color: var(--accent); }
+  .info__socials { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0 0 1.5rem; }
+  .info__socials .btn { padding: 0.6rem 1rem; font-size: 0.85rem; }
 </style>

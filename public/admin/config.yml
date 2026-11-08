@@ -9,16 +9,17 @@ backend:
     delete: "Suppression de {{collection}} « {{slug}} »"
     uploadMedia: "Ajout de l'image « {{path}} »"
     deleteMedia: "Suppression de l'image « {{path}} »"
-  # Sur Netlify, l'OAuth GitHub est géré nativement (rien à ajouter).
-  # Sur Cloudflare Pages, ajouter : base_url: https://URL-DU-PROXY-OAUTH
+  # Connexion par identifiant + mot de passe : voir netlify/functions/cms-auth.mjs
+  # (base_url et auth_endpoint sont définis dans public/admin/index.html)
 
 # Test en local sans GitHub : lancer `npm run cms` dans un 2e terminal,
 # puis ouvrir http://localhost:4321/admin/index.html (ignoré en production).
-local_backend: true
+local_backend:
+  url: http://127.0.0.1:8081/api/v1
 
 locale: fr
-site_url: https://monsite.netlify.app      # ⚠️ à remplacer
-display_url: https://monsite.netlify.app   # ⚠️ à remplacer
+site_url: https://leo-paul-site.netlify.app
+display_url: https://leo-paul-site.netlify.app
 logo_url: /favicon.svg
 
 media_folder: "public/uploads"
@@ -34,54 +35,106 @@ collections:
   - name: blog
     label: Articles
     label_singular: Article
-    description: Les articles du blog. Laissez « Brouillon » coché tant que l'article n'est pas prêt.
+    description: Les articles du blog. Laisse « Brouillon » coché tant que l'article n'est pas prêt.
     folder: src/content/blog
     create: true
     delete: true
     extension: md
     format: frontmatter
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    summary: "{{title}} — {{date | date('DD/MM/YYYY')}}{{draft | ternary(' (brouillon)', '')}}"
-    sortable_fields: [date, title]
+    summary: "{{title}} — {{sport}} — {{date | date('DD/MM/YYYY')}}{{draft | ternary(' (brouillon)', '')}}"
+    sortable_fields: [date, title, sport]
     view_filters:
       - { label: Brouillons, field: draft, pattern: true }
       - { label: Publiés, field: draft, pattern: false }
+    view_groups:
+      - { label: Sport, field: sport }
     fields:
       - { label: Titre, name: title, widget: string }
+      - label: Sport
+        name: sport
+        widget: relation
+        collection: sports
+        value_field: "{{slug}}"
+        search_fields: [name]
+        display_fields: [emoji, name]
+        hint: "La rubrique de l'article. Pour ajouter un sport, va dans « Sports »."
       - { label: Date de publication, name: date, widget: datetime }
       - label: Description
         name: description
         widget: text
-        hint: "1 à 2 phrases. Affichée sur la liste des articles et dans Google."
-      - { label: Image de couverture, name: cover, widget: image, required: false, hint: "Format paysage conseillé (1200 × 630), en JPG ou WebP." }
-      - { label: Description de l'image, name: coverAlt, widget: string, required: false, hint: "Pour les personnes malvoyantes et le référencement. Ex. : « Cuisine rénovée en bois clair »." }
-      - { label: Brouillon, name: draft, widget: boolean, default: true, hint: "Cocher = invisible sur le site." }
+        hint: "1 à 2 phrases. Affichée sur les cartes d'articles et dans Google."
+      - { label: Image de couverture, name: cover, widget: image, required: false, hint: "Format paysage conseillé (1600 × 1000), JPG ou WebP. Sans image, un visuel aux couleurs du sport est généré." }
+      - { label: Description de l'image, name: coverAlt, widget: string, required: false, hint: "Pour les personnes malvoyantes et le référencement. Ex. : « Coureur sur la ligne d'arrivée »." }
+      - { label: Mots-clés, name: tags, widget: list, required: false, hint: "Séparés par des virgules. Ex. : entraînement, débutant" }
+      - { label: À la une, name: featured, widget: boolean, default: false, hint: "Mis en grand sur la page d'accueil (le plus récent « à la une » l'emporte)." }
+      - { label: Brouillon, name: draft, widget: boolean, default: true, hint: "Coché = invisible sur le site." }
       - { label: Contenu, name: body, widget: markdown }
+
+  - name: sports
+    label: Sports
+    label_singular: Sport
+    description: Les rubriques du blog. Chaque sport a sa propre page avec tous ses articles.
+    folder: src/content/sports
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    identifier_field: name
+    slug: "{{name | lower}}"
+    summary: "{{emoji}} {{name}}"
+    sortable_fields: [order, name]
+    fields:
+      - { label: Nom, name: name, widget: string }
+      - { label: Emoji, name: emoji, widget: string, default: "🏅", hint: "Un seul emoji. Ex. : ⚽ 🏃 🏀 🎾 💪 🚴 🏊 🥊 ⛷️ 🏉" }
+      - label: Couleur
+        name: color
+        widget: select
+        default: "#d4ff3a"
+        options:
+          - { label: "Néon (jaune-vert)", value: "#d4ff3a" }
+          - { label: "Vert", value: "#22c55e" }
+          - { label: "Orange", value: "#f97316" }
+          - { label: "Rose", value: "#e879f9" }
+          - { label: "Bleu ciel", value: "#38bdf8" }
+          - { label: "Rouge", value: "#f43f5e" }
+          - { label: "Jaune", value: "#facc15" }
+          - { label: "Violet", value: "#a78bfa" }
+          - { label: "Turquoise", value: "#2dd4bf" }
+      - { label: Accroche, name: tagline, widget: string, hint: "Une phrase affichée sur la page du sport." }
+      - { label: Image d'en-tête, name: cover, widget: image, required: false }
+      - { label: Ordre d'affichage, name: order, widget: number, default: 10, value_type: int, hint: "Plus petit = affiché en premier." }
 
   - name: pages
     label: Pages du site
     label_singular: Page
     description: Textes des pages principales.
-    editor:
-      preview: true
     files:
       - label: Accueil
         name: accueil
         file: src/content/pages/accueil.md
         fields:
           - { label: Petit titre, name: eyebrow, widget: string, required: false }
-          - { label: Grand titre, name: title, widget: string }
+          - { label: Grand titre, name: title, widget: string, hint: "Mettre un passage entre *étoiles* pour l'afficher en contour. Ex. : Le sport, *sans filtre.*" }
           - { label: Phrase d'accroche, name: intro, widget: text, required: false }
           - { label: Description (Google), name: description, widget: text }
-          - { label: Image, name: image, widget: image, required: false }
-          - { label: Description de l'image, name: imageAlt, widget: string, required: false }
+          - { label: Image de partage, name: image, widget: image, required: false, hint: "Image affichée quand le site est partagé sur les réseaux." }
           - label: Bouton principal
             name: cta
             widget: object
             required: false
             fields:
               - { label: Texte, name: label, widget: string }
-              - { label: Lien, name: href, widget: string, default: /contact/ }
+              - { label: Lien, name: href, widget: string, default: /blog/ }
+          - label: Chiffres clés
+            name: stats
+            widget: list
+            required: false
+            max: 3
+            summary: "{{fields.value}} {{fields.label}}"
+            fields:
+              - { label: Valeur, name: value, widget: string }
+              - { label: Légende, name: label, widget: string }
           - { label: Texte complémentaire, name: body, widget: markdown, required: false }
 
       - label: À propos
@@ -89,39 +142,19 @@ collections:
         file: src/content/pages/a-propos.md
         fields:
           - { label: Petit titre, name: eyebrow, widget: string, required: false }
-          - { label: Titre, name: title, widget: string }
+          - { label: Titre, name: title, widget: string, hint: "Passage entre *étoiles* = affiché en contour." }
           - { label: Introduction, name: intro, widget: text, required: false }
           - { label: Description (Google), name: description, widget: text }
           - { label: Photo, name: image, widget: image, required: false }
           - { label: Description de la photo, name: imageAlt, widget: string, required: false }
           - { label: Contenu, name: body, widget: markdown }
 
-      - label: Services & réalisations
-        name: services
-        file: src/content/pages/services.md
-        fields:
-          - { label: Petit titre, name: eyebrow, widget: string, required: false }
-          - { label: Titre, name: title, widget: string }
-          - { label: Introduction, name: intro, widget: text, required: false }
-          - { label: Description (Google), name: description, widget: text }
-          - { label: Image, name: image, widget: image, required: false }
-          - { label: Description de l'image, name: imageAlt, widget: string, required: false }
-          - label: Services
-            name: services
-            widget: list
-            label_singular: service
-            summary: "{{fields.title}}"
-            fields:
-              - { label: Nom du service, name: title, widget: string }
-              - { label: Description, name: description, widget: text }
-          - { label: Réalisations / contenu, name: body, widget: markdown, required: false }
-
       - label: Contact
         name: contact
         file: src/content/pages/contact.md
         fields:
           - { label: Petit titre, name: eyebrow, widget: string, required: false }
-          - { label: Titre, name: title, widget: string }
+          - { label: Titre, name: title, widget: string, hint: "Passage entre *étoiles* = affiché en contour." }
           - { label: Introduction, name: intro, widget: text, required: false }
           - { label: Description (Google), name: description, widget: text }
-          - { label: Texte complémentaire (horaires…), name: body, widget: markdown, required: false }
+          - { label: Texte complémentaire, name: body, widget: markdown, required: false }

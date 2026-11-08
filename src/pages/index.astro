@@ -1,58 +1,188 @@
 ---
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ArticleGrid from '../components/ArticleGrid.astro';
-import { getPublishedPosts } from '../lib/posts';
+import ArticleCard from '../components/ArticleCard.astro';
+import SportTile from '../components/SportTile.astro';
+import Ticker from '../components/Ticker.astro';
+import { getPublishedPosts, getSports, displayTitle, plainTitle } from '../lib/posts';
 
 const page = await getEntry('pages', 'accueil');
 if (!page) throw new Error('src/content/pages/accueil.md est introuvable');
 const { Content } = await render(page);
-const latest = (await getPublishedPosts()).slice(0, 3);
-const { title, description, eyebrow, intro, cta, image, imageAlt } = page.data;
+const { title, description, eyebrow, intro, cta, image, stats } = page.data;
+
+const posts = await getPublishedPosts();
+const sports = await getSports();
+const sportMap = new Map(sports.map((s) => [s.id, s]));
+
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const others = posts.filter((p) => p !== featured).slice(0, 4);
+const countBySport = (id: string) => posts.filter((p) => p.data.sport === id).length;
+
+const tickerItems = posts.slice(0, 8).map((p) => ({
+  label: p.data.title,
+  href: `/blog/${p.id}/`,
+  emoji: sportMap.get(p.data.sport)?.data.emoji,
+}));
 ---
 
-<BaseLayout description={description} image={image}>
+<BaseLayout description={description} image={image ?? featured?.data.cover}>
+  <!-- ============ HERO ============ -->
   <section class="hero">
-    <div class:list={['container', 'hero__inner', { 'has-image': !!image }]}>
-      <div>
-        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
-        <h1>{title}</h1>
-        {intro && <p class="hero__lead muted">{intro}</p>}
-        <div class="prose"><Content /></div>
-        <div class="hero__actions">
-          {cta && <a class="btn" href={cta.href}>{cta.label}</a>}
-          <a class="btn btn--ghost" href="/services/">Découvrir les services</a>
+    <div class="hero__bg" aria-hidden="true">
+      {sports.slice(0, 4).map((s, i) => <span class="blob" style={`--sport:${s.data.color};--n:${i}`}></span>)}
+      <div class="hero__grid"></div>
+    </div>
+
+    <div class="container hero__inner">
+      <div class="hero__copy">
+        {eyebrow && <p class="kicker hero__kicker">{eyebrow}</p>}
+        <h1 class="display h-xl hero__title" set:html={displayTitle(title)} />
+        <div class="hero__row">
+          <div>
+            {intro && <p class="hero__intro">{intro}</p>}
+            <div class="hero__extra"><Content /></div>
+            <div class="hero__actions">
+              {cta && <a class="btn" href={cta.href}>{cta.label} <span class="arrow" aria-hidden="true">→</span></a>}
+              <a class="btn btn--ghost" href="/sports/">Choisir un sport</a>
+            </div>
+          </div>
+          {stats.length > 0 && (
+            <dl class="stats">
+              {stats.map((s) => (
+                <div><dt class="sr-only">{s.label}</dt><dd><span class="display">{s.value}</span><span class="muted">{s.label}</span></dd></div>
+              ))}
+            </dl>
+          )}
         </div>
       </div>
-      {image && (
-        <img src={image} alt={imageAlt ?? ''} width="800" height="800" fetchpriority="high" decoding="async" />
-      )}
+
+      <div class="badge" aria-hidden="true">
+        <svg viewBox="0 0 200 200">
+          <defs><path id="circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
+          <text><textPath href="#circle" textLength="486" lengthAdjust="spacing">Leo-Paul • Blog sport • Leo-Paul • Blog sport • </textPath></text>
+        </svg>
+        <span class="badge__center">{sports.map((s) => s.data.emoji).slice(0, 1)}</span>
+      </div>
     </div>
+
+    <ul class="sport-chips container" aria-label="Rubriques">
+      {sports.map((s) => (
+        <li><a class="chip" style={`--sport:${s.data.color}`} href={`/sports/${s.id}/`}>{s.data.emoji} {s.data.name}</a></li>
+      ))}
+    </ul>
   </section>
 
-  <section class="section">
-    <div class="container">
-      <div class="section-head">
-        <h2>Derniers articles</h2>
-        <a href="/blog/">Voir tout le blog →</a>
+  {tickerItems.length > 0 && <Ticker items={tickerItems} />}
+
+  <!-- ============ À LA UNE ============ -->
+  {featured && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <div>
+            <p class="kicker">À la une</p>
+            <h2 class="display h-lg">Derniers <span class="outline">articles</span></h2>
+          </div>
+          <a class="link-arrow" href="/blog/">Tous les articles →</a>
+        </div>
+        <div class="bento">
+          <div class="bento__main">
+            <ArticleCard post={featured} sport={sportMap.get(featured.data.sport)} variant="feature" headingLevel="h3" />
+          </div>
+          {others.map((p, i) => (
+            <div><ArticleCard post={p} sport={sportMap.get(p.data.sport)} index={i + 1} /></div>
+          ))}
+        </div>
       </div>
-      <ArticleGrid posts={latest} headingLevel="h3" />
+    </section>
+  )}
+
+  <!-- ============ SPORTS ============ -->
+  <section class="section sports">
+    <div class="container">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="kicker">Les rubriques</p>
+          <h2 class="display h-lg">Choisis ton <span class="outline">terrain</span></h2>
+        </div>
+        <a class="link-arrow" href="/sports/">Tous les sports →</a>
+      </div>
+      <div class="tiles">
+        {sports.map((s, i) => <SportTile sport={s} count={countBySport(s.id)} index={i} />)}
+      </div>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .hero { padding: 3.5rem 0 1rem; }
-  @media (min-width: 768px) { .hero { padding: 6rem 0 2rem; } }
-  .hero__inner { display: grid; gap: 2.5rem; align-items: center; }
-  @media (min-width: 900px) { .hero__inner.has-image { grid-template-columns: 3fr 2fr; } }
-  .hero__inner > div { max-width: 46rem; }
-  .hero__inner img { border-radius: var(--radius); aspect-ratio: 1; object-fit: cover; width: 100%; }
-  .hero__lead { font-size: clamp(1.1rem, 2.2vw, 1.35rem); }
-  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
-  .section-head {
-    display: flex; justify-content: space-between; align-items: baseline;
-    gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding: clamp(2.5rem, 8vw, 6rem) 0 2.5rem; overflow: hidden; }
+  .hero__bg { position: absolute; inset: 0; z-index: -1; }
+  .blob {
+    position: absolute; width: 42vw; aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--sport) 38%, transparent), transparent);
+    filter: blur(30px); opacity: 0.55;
+    animation: float 18s ease-in-out infinite alternate; animation-delay: calc(var(--n) * -4s);
   }
-  .section-head h2 { margin: 0; }
+  .blob:nth-child(1) { top: -20%; right: -8%; }
+  .blob:nth-child(2) { top: 30%; right: 25%; width: 30vw; }
+  .blob:nth-child(3) { bottom: -30%; left: -10%; }
+  .blob:nth-child(4) { top: -10%; left: 30%; width: 22vw; }
+  @keyframes float {
+    50% { transform: translate(6%, 8%) scale(1.1); }
+    to { transform: translate(-4%, -6%) scale(0.95); }
+  }
+  .hero__grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 75%);
+  }
+  .hero__inner { position: relative; }
+  .hero__title { margin: 0; font-size: clamp(3.6rem, 14.5vw, 13rem); }
+  .hero__title :global(.outline) { -webkit-text-stroke-width: clamp(1.5px, 0.3vw, 3px); }
+  .hero__row {
+    display: grid; gap: 2.5rem; margin-top: clamp(1.5rem, 4vw, 3rem); align-items: end;
+  }
+  @media (min-width: 900px) { .hero__row { grid-template-columns: 1.3fr 1fr; } }
+  .hero__intro { font-size: clamp(1.1rem, 2vw, 1.4rem); color: #d6d6d0; max-width: 40ch; margin: 0; }
+  .hero__extra :global(p) { color: var(--muted); max-width: 46ch; margin: 1rem 0 0; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .stats > div { background: rgb(17 17 19 / 0.85); backdrop-filter: blur(8px); padding: 1.25rem 1rem; }
+  .stats dd { margin: 0; display: grid; gap: 0.35rem; }
+  .stats .display { font-size: clamp(2rem, 4vw, 3rem); color: var(--accent); }
+  .stats .muted { font-size: 0.8rem; line-height: 1.3; }
+
+  .badge {
+    position: absolute; right: 1.5rem; top: -1rem; width: clamp(7rem, 13vw, 11rem); aspect-ratio: 1;
+    display: none; place-items: center;
+  }
+  @media (min-width: 1000px) { .badge { display: grid; } }
+  .badge svg { position: absolute; inset: 0; animation: spin 22s linear infinite; }
+  .badge text { fill: var(--text); font: 800 13px var(--font-body); text-transform: uppercase; }
+  .badge__center { font-size: 3rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sport-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 3rem; padding-top: 0; padding-bottom: 0; }
+  .sport-chips .chip { font-size: 0.85rem; padding: 0.55rem 1rem 0.55rem 0.8rem; }
+
+  /* ---------- Bento ---------- */
+  .bento { display: grid; gap: 1.25rem; }
+  @media (min-width: 700px) { .bento { grid-template-columns: repeat(2, 1fr); } .bento__main { grid-column: 1 / -1; } }
+  @media (min-width: 1100px) {
+    .bento { grid-template-columns: repeat(4, 1fr); }
+    .bento__main { grid-column: span 2; grid-row: span 2; }
+    .bento__main :global(.card--feature) { min-height: 100%; }
+  }
+
+  /* ---------- Sports ---------- */
+  .sports { background: var(--bg-2); border-block: 1px solid var(--line); }
+  .tiles { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob, .badge svg { animation: none; }
+  }
 </style>

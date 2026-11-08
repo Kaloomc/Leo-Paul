@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /admin/
 
-Sitemap: https://monsite.netlify.app/sitemap-index.xml
+Sitemap: https://leo-paul-site.netlify.app/sitemap-index.xml

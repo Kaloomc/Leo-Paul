@@ -1,27 +1,27 @@
 // Informations globales du site — à personnaliser.
 export const SITE_TITLE = 'Leo-Paul';
+export const SITE_TAGLINE = 'Blog sport';
 export const SITE_DESCRIPTION =
-  'Site de Leo-Paul : présentation, services, réalisations et blog.';
+  'Le blog sport de Leo-Paul : football, running, basket, tennis, fitness. Analyses, entraînements et récits.';
 export const SITE_LOCALE = 'fr_FR';
 
 export const CONTACT = {
   email: 'contact@exemple.fr',
-  phone: '', // ex. '06 00 00 00 00' — laisser vide pour masquer
-  city: 'Ville, France',
+  city: '', // ex. 'Lyon, France' — laisser vide pour masquer
 };
 
 // Laisser une URL vide pour masquer le lien
 export const SOCIALS: { label: string; url: string }[] = [
   { label: 'Instagram', url: 'https://instagram.com/' },
-  { label: 'LinkedIn', url: 'https://www.linkedin.com/' },
+  { label: 'Strava', url: 'https://www.strava.com/' },
+  { label: 'YouTube', url: '' },
 ];
 
 export const NAV = [
-  { href: '/', label: 'Accueil' },
+  { href: '/sports/', label: 'Sports' },
+  { href: '/blog/', label: 'Articles' },
   { href: '/a-propos/', label: 'À propos' },
-  { href: '/services/', label: 'Services' },
-  { href: '/blog/', label: 'Blog' },
   { href: '/contact/', label: 'Contact' },
 ];
 
-export const POSTS_PER_PAGE = 6;
+export const POSTS_PER_PAGE = 9;

@@ -1,30 +1,32 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { Post, Sport } from '../lib/posts';
 import ArticleCard from './ArticleCard.astro';
 
 interface Props {
-  posts: CollectionEntry<'blog'>[];
+  posts: Post[];
+  sports: Map<string, Sport>;
   headingLevel?: 'h2' | 'h3';
 }
-const { posts, headingLevel } = Astro.props;
+const { posts, sports, headingLevel } = Astro.props;
 ---
 
 {posts.length === 0 ? (
-  <p class="muted">Aucun article pour le moment. Revenez bientôt !</p>
+  <div class="empty">
+    <p class="display h-sm">Rien ici… pour l'instant.</p>
+    <p class="muted">Les premiers articles arrivent bientôt.</p>
+  </div>
 ) : (
   <ul class="grid">
-    {posts.map((post) => (
-      <li><ArticleCard post={post} headingLevel={headingLevel} /></li>
+    {posts.map((post, i) => (
+      <li><ArticleCard post={post} sport={sports.get(post.data.sport)} index={i} headingLevel={headingLevel} /></li>
     ))}
   </ul>
 )}
 
 <style>
   .grid {
-    list-style: none; margin: 0; padding: 0;
-    display: grid; gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
   }
-  .grid > li { display: flex; }
-  .grid > li > :global(*) { flex: 1; }
+  .empty { padding: 3rem; border: 1px dashed var(--line-strong); border-radius: var(--radius); text-align: center; }
 </style>

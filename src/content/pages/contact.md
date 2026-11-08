@@ -1,6 +1,6 @@
 ---
-title: Contact
-description: Une question, un projet ? Écrivez-moi.
-eyebrow: Parlons-en
-intro: Une question, un projet ? Remplissez le formulaire ou écrivez-moi directement, je réponds sous 48 h.
+title: "On en *parle ?*"
+description: Une idée d'article, un partenariat, une question ? Écris-moi.
+eyebrow: Contact
+intro: Une idée d'article, un partenariat, une question sur un entraînement ? Le formulaire est là pour ça.
 ---

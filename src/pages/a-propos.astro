@@ -1,12 +1,24 @@
 ---
 import { getEntry, render } from 'astro:content';
-import PageLayout from '../layouts/PageLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 
 const page = await getEntry('pages', 'a-propos');
 if (!page) throw new Error('src/content/pages/a-propos.md est introuvable');
 const { Content } = await render(page);
+const { title, description, eyebrow, intro, image, imageAlt } = page.data;
 ---
 
-<PageLayout {...page.data}>
-  <Content />
-</PageLayout>
+<BaseLayout title={title.replace(/\*/g, '')} description={description} image={image}>
+  <PageHero eyebrow={eyebrow} title={title} intro={intro} />
+  <section class:list={['container', 'about', { 'has-img': !!image }]}>
+    {image && <img src={image} alt={imageAlt ?? ''} width="800" height="1000" loading="lazy" decoding="async" data-reveal />}
+    <div class="prose" data-reveal><Content /></div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about { display: grid; gap: 3rem; padding-bottom: 5rem; }
+  .about img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--line); }
+  @media (min-width: 900px) { .about.has-img { grid-template-columns: 2fr 3fr; align-items: start; } .about img { position: sticky; top: 6rem; } }
+</style>

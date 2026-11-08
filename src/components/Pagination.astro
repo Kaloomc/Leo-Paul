@@ -1,24 +1,17 @@
 ---
-interface Props {
-  current: number;
-  last: number;
-  prevUrl?: string;
-  nextUrl?: string;
-}
+interface Props { current: number; last: number; prevUrl?: string; nextUrl?: string }
 const { current, last, prevUrl, nextUrl } = Astro.props;
 ---
 
 {last > 1 && (
-  <nav class="pagination" aria-label="Pagination">
+  <nav class="pager" aria-label="Pagination">
     {prevUrl ? <a class="btn btn--ghost" href={prevUrl} rel="prev">← Plus récents</a> : <span></span>}
-    <span class="muted">Page {current} sur {last}</span>
+    <span class="pager__count display">{String(current).padStart(2, '0')}<span class="muted"> / {String(last).padStart(2, '0')}</span></span>
     {nextUrl ? <a class="btn btn--ghost" href={nextUrl} rel="next">Plus anciens →</a> : <span></span>}
   </nav>
 )}
 
 <style>
-  .pagination {
-    display: flex; justify-content: space-between; align-items: center;
-    gap: 1rem; margin-top: 3rem; flex-wrap: wrap;
-  }
+  .pager { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 3.5rem; flex-wrap: wrap; }
+  .pager__count { font-size: 2rem; }
 </style>

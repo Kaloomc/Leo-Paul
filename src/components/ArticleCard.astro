@@ -1,61 +1,95 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import FormattedDate from './FormattedDate.astro';
+import type { Post, Sport } from '../lib/posts';
+import { formatDate, readingTime } from '../lib/posts';
+import Cover from './Cover.astro';
 
 interface Props {
-  post: CollectionEntry<'blog'>;
+  post: Post;
+  sport?: Sport;
+  variant?: 'default' | 'feature';
+  index?: number;
   headingLevel?: 'h2' | 'h3';
 }
-
-const { post, headingLevel = 'h2' } = Astro.props;
+const { post, sport, variant = 'default', index = 0, headingLevel = 'h3' } = Astro.props;
 const { title, description, date, cover, coverAlt } = post.data;
 const Heading = headingLevel;
+const color = sport?.data.color;
 ---
 
-<article class="card">
-  {cover ? (
-    <img
-      class="card__img"
-      src={cover}
-      alt={coverAlt ?? ''}
-      loading="lazy"
-      decoding="async"
-      width="600"
-      height="315"
-    />
-  ) : (
-    <div class="card__img card__img--placeholder" aria-hidden="true"></div>
-  )}
+<article
+  class:list={['card', `card--${variant}`]}
+  style={`--i:${index % 6};${color ? `--sport:${color}` : ''}`}
+  data-reveal
+>
+  <Cover
+    class="card__cover"
+    src={cover}
+    alt={coverAlt}
+    sport={sport}
+    eager={variant === 'feature'}
+    transitionName={`cover-${post.id}`}
+  />
   <div class="card__body">
-    <p class="card__date muted"><FormattedDate date={date} /></p>
-    <Heading class="card__title">
+    <div class="card__meta">
+      {sport && <a class="chip" href={`/sports/${sport.id}/`}>{sport.data.emoji} {sport.data.name}</a>}
+      <span class="muted"><time datetime={date.toISOString()}>{formatDate(date)}</time> · {readingTime(post.body)}</span>
+    </div>
+    <Heading class:list={['card__title', variant === 'feature' ? 'display h-lg' : 'display h-sm']}>
       <a href={`/blog/${post.id}/`}>{title}</a>
     </Heading>
     <p class="card__desc muted">{description}</p>
+    <span class="card__go" aria-hidden="true">Lire <span>→</span></span>
   </div>
 </article>
 
 <style>
   .card {
-    position: relative; display: flex; flex-direction: column;
-    background: var(--c-surface); border: 1px solid var(--c-border);
-    border-radius: var(--radius); overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; display: flex; flex-direction: column; height: 100%;
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+    overflow: hidden; transition: border-color 0.4s var(--ease), transform 0.5s var(--ease);
   }
-  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-  @media (prefers-reduced-motion: reduce) { .card:hover { transform: none; } }
-  .card__img { width: 100%; aspect-ratio: 1200 / 630; object-fit: cover; }
-  .card__img--placeholder {
-    background: linear-gradient(135deg, var(--c-accent-soft), var(--c-border));
+  .card::before {
+    content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; border-radius: inherit;
+    background: radial-gradient(60% 50% at 50% 0%, color-mix(in srgb, var(--sport) 18%, transparent), transparent);
+    opacity: 0; transition: opacity 0.5s var(--ease);
   }
-  .card__body { padding: 1.25rem 1.25rem 1.5rem; display: flex; flex-direction: column; flex: 1; }
-  .card__date { font-size: 0.85rem; margin-bottom: 0.35rem; }
-  .card__title { font-size: 1.25rem; margin-bottom: 0.5rem; }
-  .card__title a { color: var(--c-text); text-decoration: none; }
-  /* toute la carte est cliquable */
-  .card__title a::after { content: ''; position: absolute; inset: 0; }
-  .card:hover .card__title a { color: var(--c-accent); }
-  .card:focus-within { outline: 3px solid var(--c-accent); outline-offset: 2px; }
+  .card:hover { border-color: color-mix(in srgb, var(--sport) 55%, transparent); transform: translateY(-4px); }
+  .card:hover::before { opacity: 1; }
+  .card:hover :global(.cover img) { transform: scale(1.06); }
+  .card:hover :global(.cover__emoji) { transform: rotate(4deg) scale(1.12); }
+  .card:focus-within { outline: 3px solid var(--sport); outline-offset: 3px; }
+
+  .card :global(.card__cover) { aspect-ratio: 16 / 10; }
+  .card__body { position: relative; display: flex; flex-direction: column; gap: 0.75rem; padding: 1.4rem 1.4rem 1.5rem; flex: 1; }
+  .card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; font-size: 0.82rem; }
+  .card__title { margin: 0; }
+  .card__title a { text-decoration: none; }
+  .card__title a::after { content: ''; position: absolute; inset: 0; z-index: 1; }
   .card__title a:focus-visible { outline: none; }
-  .card__desc { margin: 0; font-size: 0.97rem; }
+  .card:hover .card__title a { color: var(--sport); }
+  .card__desc { margin: 0; font-size: 0.97rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .card__go {
+    margin-top: auto; padding-top: 0.5rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--sport); display: inline-flex; gap: 0.4rem;
+  }
+  .card__go span { transition: transform 0.3s var(--ease); }
+  .card:hover .card__go span { transform: translateX(5px); }
+
+  /* Variante « à la une » : image en grand, texte par-dessus */
+  .card--feature { min-height: 30rem; justify-content: flex-end; }
+  .card--feature :global(.card__cover) { position: absolute; inset: 0; aspect-ratio: auto; }
+  .card--feature .card__body {
+    flex: 0; padding: clamp(1.4rem, 4vw, 2.75rem);
+    background: linear-gradient(to top, rgb(10 10 11 / 0.95) 20%, rgb(10 10 11 / 0.6) 65%, transparent);
+  }
+  .card--feature :global(.cover__art) { place-items: start end; padding: clamp(1.5rem, 4vw, 3rem); }
+  .card--feature :global(.cover__emoji) { font-size: clamp(5rem, 12vw, 10rem); }
+  .card--feature :global(.cover__word) { top: 0.1em; bottom: auto; }
+  .card--feature .card__title { max-width: 18ch; }
+  .card--feature .card__desc { color: #d6d6d0; max-width: 52ch; font-size: 1.05rem; }
+  .card--feature .card__meta .muted { color: #d6d6d0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .card:hover { transform: none; }
+  }
 </style>
