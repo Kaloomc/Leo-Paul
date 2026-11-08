@@ -1,8 +1,8 @@
 // Informations globales du site — à personnaliser.
-export const SITE_TITLE = 'Leo-Paul';
-export const SITE_TAGLINE = 'Blog sport';
+export const SITE_TITLE = 'SportFlash';
+export const SITE_TAGLINE = 'Le sport, en un éclair';
 export const SITE_DESCRIPTION =
-  'Le blog sport de Leo-Paul : football, running, basket, tennis, fitness. Analyses, entraînements et récits.';
+  'SportFlash : foot, cyclisme, sports auto, basket, tennis, rugby, sports US et plus. Résultats, analyses, entraînements et récits.';
 export const SITE_LOCALE = 'fr_FR';
 
 export const CONTACT = {
@@ -10,11 +10,11 @@ export const CONTACT = {
   city: '', // ex. 'Lyon, France' — laisser vide pour masquer
 };
 
-// Laisser une URL vide pour masquer le lien
-export const SOCIALS: { label: string; url: string }[] = [
-  { label: 'Instagram', url: 'https://instagram.com/' },
-  { label: 'Strava', url: 'https://www.strava.com/' },
-  { label: 'YouTube', url: '' },
+// Réseaux (icônes dans l'en-tête, le menu mobile, le pied de page et Contact).
+// ⚠️ Remplacer par les vraies adresses des comptes. Laisser une URL vide pour masquer l'icône.
+export const SOCIALS: { label: string; icon: 'instagram' | 'tiktok'; url: string }[] = [
+  { label: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/' },
+  { label: 'TikTok', icon: 'tiktok', url: 'https://www.tiktok.com/' },
 ];
 
 export const NAV = [

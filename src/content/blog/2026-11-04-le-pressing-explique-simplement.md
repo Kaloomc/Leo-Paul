@@ -2,7 +2,7 @@
 title: Le pressing expliqué simplement
 date: 2026-11-04T18:30:00.000Z
 description: Pourquoi les meilleures équipes récupèrent le ballon si haut, et comment ça se met en place.
-sport: football
+sport: foot
 tags: [tactique]
 draft: false
 ---

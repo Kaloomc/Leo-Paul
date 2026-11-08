@@ -7,11 +7,11 @@
     <title>Espace rédaction</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <style>
-      :root { color-scheme: dark; --accent: #d4ff3a; --bg: #0a0a0b; --surface: #17171a; --line: rgb(255 255 255 / 0.14); --muted: #a3a3ab; }
+      :root { color-scheme: dark; --accent: #5ef2c6; --bg: #09070d; --surface: #15111d; --line: rgb(255 255 255 / 0.14); --muted: #aaa3ba; }
       #login {
         position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px;
         background: radial-gradient(60% 60% at 85% 0%, rgb(212 255 58 / 0.18), transparent 70%), var(--bg);
-        color: #f4f4f0; font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+        color: #f6f4fb; font: 16px/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
       }
       #login[hidden] { display: none; }
       .box { width: min(100%, 380px); display: grid; gap: 14px; }
@@ -41,7 +41,7 @@
     <!-- Écran de connexion (identifiant + mot de passe) affiché avant Decap CMS -->
     <div id="login" hidden>
       <form class="box" id="login-form">
-        <div class="mark" aria-hidden="true">LP</div>
+        <div class="mark" aria-hidden="true">SF</div>
         <h1>Espace rédaction</h1>
         <p class="sub">Connecte-toi pour écrire et publier des articles.</p>
         <label>Identifiant <input name="username" autocomplete="username" autocapitalize="none" required /></label>

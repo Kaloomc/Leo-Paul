@@ -1,8 +1,8 @@
 ---
 title: Bienvenue sur le blog
 date: 2026-11-08T10:00:00.000Z
-description: Football, running, basket, tennis, fitness — voici ce qui vous attend ici.
-sport: fitness
+description: Foot, cyclisme, sports auto, basket, tennis, rugby, sports US… voici ce qui vous attend ici.
+sport: autres
 tags: [édito]
 featured: true
 draft: false

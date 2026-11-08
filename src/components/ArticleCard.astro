@@ -57,6 +57,8 @@ const color = sport?.data.color;
   .card:hover::before { opacity: 1; }
   .card:hover :global(.cover img) { transform: scale(1.06); }
   .card:hover :global(.cover__emoji) { transform: rotate(4deg) scale(1.12); }
+  .card:hover :global(.corners)::before { transform: translate(6px, -6px); }
+  .card:hover :global(.corners)::after { transform: translate(-6px, 6px); }
   .card:focus-within { outline: 3px solid var(--sport); outline-offset: 3px; }
 
   .card :global(.card__cover) { aspect-ratio: 16 / 10; }
@@ -80,14 +82,17 @@ const color = sport?.data.color;
   .card--feature :global(.card__cover) { position: absolute; inset: 0; aspect-ratio: auto; }
   .card--feature .card__body {
     flex: 0; padding: clamp(1.4rem, 4vw, 2.75rem);
-    background: linear-gradient(to top, rgb(10 10 11 / 0.95) 20%, rgb(10 10 11 / 0.6) 65%, transparent);
+    background: linear-gradient(to top, rgb(9 7 13 / 0.96) 20%, rgb(9 7 13 / 0.6) 65%, transparent);
   }
   .card--feature :global(.cover__art) { place-items: start end; padding: clamp(1.5rem, 4vw, 3rem); }
   .card--feature :global(.cover__emoji) { font-size: clamp(5rem, 12vw, 10rem); }
   .card--feature :global(.cover__word) { top: 0.1em; bottom: auto; }
+  .card--feature :global(.corners) { --cs: clamp(3rem, 12cqi, 8rem); }
+  /* le coin bas-gauche passerait sous le texte : on garde celui du haut */
+  .card--feature :global(.corners)::after { display: none; }
   .card--feature .card__title { max-width: 18ch; }
-  .card--feature .card__desc { color: #d6d6d0; max-width: 52ch; font-size: 1.05rem; }
-  .card--feature .card__meta .muted { color: #d6d6d0; }
+  .card--feature .card__desc { color: #ddd8e8; max-width: 52ch; font-size: 1.05rem; }
+  .card--feature .card__meta .muted { color: #ddd8e8; }
 
   @media (prefers-reduced-motion: reduce) {
     .card, .card:hover { transform: none; }

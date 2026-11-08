@@ -86,21 +86,20 @@ collections:
     sortable_fields: [order, name]
     fields:
       - { label: Nom, name: name, widget: string }
-      - { label: Emoji, name: emoji, widget: string, default: "🏅", hint: "Un seul emoji. Ex. : ⚽ 🏃 🏀 🎾 💪 🚴 🏊 🥊 ⛷️ 🏉" }
+      - { label: Emoji, name: emoji, widget: string, default: "🏅", hint: "Un seul emoji. Ex. : ⚽ 🚴 🏎️ 🏀 🎾 🏉 🏈 🏅 🥊 🏊" }
       - label: Couleur
         name: color
         widget: select
-        default: "#d4ff3a"
+        default: "#5ef2c6"
         options:
-          - { label: "Néon (jaune-vert)", value: "#d4ff3a" }
-          - { label: "Vert", value: "#22c55e" }
-          - { label: "Orange", value: "#f97316" }
-          - { label: "Rose", value: "#e879f9" }
-          - { label: "Bleu ciel", value: "#38bdf8" }
-          - { label: "Rouge", value: "#f43f5e" }
-          - { label: "Jaune", value: "#facc15" }
+          - { label: "Menthe (SportFlash)", value: "#5ef2c6" }
           - { label: "Violet", value: "#a78bfa" }
+          - { label: "Rose lilas", value: "#f0abfc" }
+          - { label: "Cyan", value: "#67e8f9" }
+          - { label: "Indigo", value: "#818cf8" }
+          - { label: "Lavande", value: "#c4b5fd" }
           - { label: "Turquoise", value: "#2dd4bf" }
+          - { label: "Blanc", value: "#f6f4fb" }
       - { label: Accroche, name: tagline, widget: string, hint: "Une phrase affichée sur la page du sport." }
       - { label: Image d'en-tête, name: cover, widget: image, required: false }
       - { label: Ordre d'affichage, name: order, widget: number, default: 10, value_type: int, hint: "Plus petit = affiché en premier." }

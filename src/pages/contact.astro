@@ -2,13 +2,13 @@
 import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
-import { CONTACT, SOCIALS } from '../consts';
+import { CONTACT } from '../consts';
+import SocialLinks from '../components/SocialLinks.astro';
 
 const page = await getEntry('pages', 'contact');
 if (!page) throw new Error('src/content/pages/contact.md est introuvable');
 const { Content } = await render(page);
 const { title, description, eyebrow, intro } = page.data;
-const socials = SOCIALS.filter((s) => s.url);
 ---
 
 <BaseLayout title={title.replace(/\*/g, '')} description={description}>
@@ -52,11 +52,7 @@ const socials = SOCIALS.filter((s) => s.url);
       <p class="kicker">Direct</p>
       <a class="info__mail display" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
       {CONTACT.city && <p class="muted">📍 {CONTACT.city}</p>}
-      {socials.length > 0 && (
-        <ul class="info__socials">
-          {socials.map((s) => <li><a class="btn btn--ghost" href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}
-        </ul>
-      )}
+      <SocialLinks size="lg" class="info__socials" />
       <div class="prose"><Content /></div>
     </aside>
   </section>
@@ -88,10 +84,9 @@ const socials = SOCIALS.filter((s) => s.url);
 
   .info { align-self: start; padding: 2rem; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); }
   .info__mail {
-    display: block; font-size: clamp(1.6rem, 3vw, 2.2rem); text-transform: none; text-decoration: none;
+    display: block; font-size: clamp(1.8rem, 3.2vw, 2.4rem); text-decoration: none;
     word-break: break-all; margin-bottom: 1.25rem;
   }
   .info__mail:hover { color: var(--accent); }
-  .info__socials { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0 0 1.5rem; }
-  .info__socials .btn { padding: 0.6rem 1rem; font-size: 0.85rem; }
+  .info :global(.info__socials) { margin: 0 0 1.5rem; }
 </style>

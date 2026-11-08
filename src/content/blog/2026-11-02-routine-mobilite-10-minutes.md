@@ -2,7 +2,7 @@
 title: La routine mobilité de 10 minutes
 date: 2026-11-02T07:00:00.000Z
 description: Hanches, épaules, chevilles — la séance express à faire chaque matin pour bouger mieux.
-sport: fitness
+sport: autres
 tags: [mobilité, routine]
 draft: false
 ---

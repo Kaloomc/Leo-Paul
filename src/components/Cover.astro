@@ -12,6 +12,7 @@ interface Props {
 }
 const { src, alt = '', sport, eager = false, transitionName, class: cls } = Astro.props;
 const color = sport?.data.color ?? 'var(--accent)';
+// les coins prennent la couleur menthe de la charte, quel que soit le sport
 const emoji = sport?.data.emoji ?? '🏅';
 const name = sport?.data.name ?? 'Sport';
 ---
@@ -33,24 +34,31 @@ const name = sport?.data.name ?? 'Sport';
       <span class="cover__emoji">{emoji}</span>
     </div>
   )}
+  <span class="corners" aria-hidden="true"></span>
 </div>
 
 <style>
   .cover { position: relative; overflow: hidden; background: var(--surface); }
   .cover img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.9s var(--ease); }
+  /* voile sombre façon visuels Insta */
+  .cover:has(img)::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to top, rgb(9 7 13 / 0.55), transparent 55%), color-mix(in srgb, var(--violet) 12%, transparent);
+  }
   .cover__art {
     position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden;
     background:
-      radial-gradient(120% 90% at 85% 10%, color-mix(in srgb, var(--sport) 70%, transparent), transparent 60%),
-      radial-gradient(80% 80% at 0% 100%, color-mix(in srgb, var(--sport) 35%, transparent), transparent 70%),
-      repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.035) 0 2px, transparent 2px 14px),
-      #121214;
+      radial-gradient(90% 80% at 50% 45%, color-mix(in srgb, var(--violet) 55%, transparent), transparent 70%),
+      radial-gradient(70% 60% at 85% 10%, color-mix(in srgb, var(--sport) 35%, transparent), transparent 70%),
+      radial-gradient(60% 60% at 10% 100%, rgb(0 0 0 / 0.6), transparent 70%),
+      repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.03) 0 2px, transparent 2px 14px),
+      #120d1b;
   }
   .cover__word {
     position: absolute; left: -5%; bottom: -0.12em; white-space: nowrap;
-    font-family: var(--font-display); font-weight: 900; font-stretch: 62%; text-transform: uppercase;
+    font-family: var(--font-display); font-weight: 800; font-stretch: 62%;
     font-size: clamp(5rem, 22cqi, 14rem); line-height: 0.8;
-    color: transparent; -webkit-text-stroke: 1.5px rgb(255 255 255 / 0.22);
+    color: transparent; -webkit-text-stroke: 1.5px rgb(255 255 255 / 0.18);
   }
   .cover__emoji {
     font-size: clamp(3rem, 18cqi, 8rem); transform: rotate(-12deg);

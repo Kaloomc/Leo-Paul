@@ -30,11 +30,12 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
   <!-- ============ HERO ============ -->
   <section class="hero">
     <div class="hero__bg" aria-hidden="true">
-      {sports.slice(0, 4).map((s, i) => <span class="blob" style={`--sport:${s.data.color};--n:${i}`}></span>)}
+      {['var(--violet)', 'var(--accent)', 'var(--violet)', '#a78bfa'].map((c, i) => <span class="blob" style={`--sport:${c};--n:${i}`}></span>)}
       <div class="hero__grid"></div>
     </div>
 
     <div class="container hero__inner">
+      <span class="corners hero__corners" aria-hidden="true"></span>
       <div class="hero__copy">
         {eyebrow && <p class="kicker hero__kicker">{eyebrow}</p>}
         <h1 class="display h-xl hero__title" set:html={displayTitle(title)} />
@@ -60,7 +61,7 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
       <div class="badge" aria-hidden="true">
         <svg viewBox="0 0 200 200">
           <defs><path id="circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
-          <text><textPath href="#circle" textLength="486" lengthAdjust="spacing">Leo-Paul • Blog sport • Leo-Paul • Blog sport • </textPath></text>
+          <text><textPath href="#circle" textLength="486" lengthAdjust="spacing">SportFlash • Résultats • SportFlash • Analyses • </textPath></text>
         </svg>
         <span class="badge__center">{sports.map((s) => s.data.emoji).slice(0, 1)}</span>
       </div>
@@ -117,12 +118,12 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
 
 <style>
   /* ---------- Hero ---------- */
-  .hero { position: relative; padding: clamp(2.5rem, 8vw, 6rem) 0 2.5rem; overflow: hidden; }
+  .hero { position: relative; isolation: isolate; padding: clamp(2.5rem, 8vw, 6rem) 0 2.5rem; overflow: hidden; }
   .hero__bg { position: absolute; inset: 0; z-index: -1; }
   .blob {
     position: absolute; width: 42vw; aspect-ratio: 1; border-radius: 50%;
-    background: radial-gradient(closest-side, color-mix(in srgb, var(--sport) 38%, transparent), transparent);
-    filter: blur(30px); opacity: 0.55;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--sport) 70%, transparent), transparent);
+    filter: blur(40px); opacity: 0.5;
     animation: float 18s ease-in-out infinite alternate; animation-delay: calc(var(--n) * -4s);
   }
   .blob:nth-child(1) { top: -20%; right: -8%; }
@@ -139,25 +140,27 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
     background-size: 72px 72px;
     mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 75%);
   }
-  .hero__inner { position: relative; }
+  .hero__inner { position: relative; container-type: inline-size; padding-block: clamp(1.5rem, 4vw, 3rem); }
+  .hero__corners { --cs: clamp(3rem, 12cqi, 9rem); --cw: clamp(5px, 1cqi, 12px); --ci: 0 0.25rem; z-index: 0; }
+  .hero__copy { position: relative; z-index: 1; }
   .hero__title { margin: 0; font-size: clamp(3.6rem, 14.5vw, 13rem); }
   .hero__title :global(.outline) { -webkit-text-stroke-width: clamp(1.5px, 0.3vw, 3px); }
   .hero__row {
     display: grid; gap: 2.5rem; margin-top: clamp(1.5rem, 4vw, 3rem); align-items: end;
   }
   @media (min-width: 900px) { .hero__row { grid-template-columns: 1.3fr 1fr; } }
-  .hero__intro { font-size: clamp(1.1rem, 2vw, 1.4rem); color: #d6d6d0; max-width: 40ch; margin: 0; }
+  .hero__intro { font-size: clamp(1.1rem, 2vw, 1.4rem); color: #ddd8e8; max-width: 40ch; margin: 0; }
   .hero__extra :global(p) { color: var(--muted); max-width: 46ch; margin: 1rem 0 0; }
   .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
 
   .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-  .stats > div { background: rgb(17 17 19 / 0.85); backdrop-filter: blur(8px); padding: 1.25rem 1rem; }
+  .stats > div { background: rgb(21 17 29 / 0.85); backdrop-filter: blur(8px); padding: 1.25rem 1rem; }
   .stats dd { margin: 0; display: grid; gap: 0.35rem; }
   .stats .display { font-size: clamp(2rem, 4vw, 3rem); color: var(--accent); }
   .stats .muted { font-size: 0.8rem; line-height: 1.3; }
 
   .badge {
-    position: absolute; right: 1.5rem; top: -1rem; width: clamp(7rem, 13vw, 11rem); aspect-ratio: 1;
+    position: absolute; right: clamp(9rem, 16vw, 14rem); top: 0.5rem; width: clamp(7rem, 13vw, 11rem); aspect-ratio: 1;
     display: none; place-items: center;
   }
   @media (min-width: 1000px) { .badge { display: grid; } }

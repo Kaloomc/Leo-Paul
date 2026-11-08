@@ -2,7 +2,7 @@
 title: Préparer son premier 10 km en 8 semaines
 date: 2026-11-06T08:00:00.000Z
 description: Un plan simple, progressif et sans blessure pour franchir la ligne d'arrivée le sourire aux lèvres.
-sport: running
+sport: autres
 tags: [entraînement, débutant]
 draft: false
 ---

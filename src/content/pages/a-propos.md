@@ -1,20 +1,23 @@
 ---
-title: "Derrière *le blog*"
-description: Qui est Leo-Paul, et pourquoi ce blog de sport.
+title: "Derrière *SportFlash*"
+description: Qui est derrière SportFlash, et pourquoi ce média sport.
 eyebrow: À propos
-intro: Un passionné de sport qui partage ce qu'il vit, teste et analyse.
+intro: Des passionnés de sport qui partagent ce qu'ils vivent, testent et analysent.
 ---
 
-Salut, moi c'est **Leo-Paul**. Texte de présentation à personnaliser : parcours sportif, sports pratiqués, objectifs…
+Salut, ici l'équipe **SportFlash**. Texte de présentation à personnaliser : qui on est, nos sports, nos objectifs…
 
-## Pourquoi ce blog ?
+## Pourquoi SportFlash ?
 
 Pour partager des contenus **honnêtes et concrets** : ce qui marche à l'entraînement, ce qui se passe sur les terrains, et les histoires qui donnent envie de bouger.
 
-## Mes sports
+## Nos sports
 
-- ⚽ Football
-- 🏃 Running
+- ⚽ Foot
+- 🚴 Cyclisme
+- 🏎️ Sports auto
 - 🏀 Basket
 - 🎾 Tennis
-- 💪 Fitness
+- 🏉 Rugby
+- 🏈 Sports US
+- 🏅 Autres

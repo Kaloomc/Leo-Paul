@@ -24,7 +24,7 @@ const { name, emoji, color, tagline } = sport.data;
     content: ''; position: absolute; inset: 0; z-index: -1; background: var(--sport);
     clip-path: circle(0% at 100% 0%); transition: clip-path 0.7s var(--ease);
   }
-  .tile:hover, .tile:focus-visible { color: #0a0a0b; border-color: var(--sport); }
+  .tile:hover, .tile:focus-visible { color: var(--accent-ink); border-color: var(--sport); }
   .tile:hover::before, .tile:focus-visible::before { clip-path: circle(150% at 100% 0%); }
   .tile__num { font-size: 0.8rem; font-weight: 700; color: var(--sport); font-variant-numeric: tabular-nums; transition: color 0.4s; }
   .tile:hover .tile__num { color: inherit; }

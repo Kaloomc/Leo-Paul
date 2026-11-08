@@ -1,13 +1,13 @@
 body {
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 18px; line-height: 1.65; color: #dcdcd6; background: #0a0a0b;
+  font-size: 18px; line-height: 1.65; color: #ddd8e8; background: #09070d;
   max-width: 44rem; margin: 0 auto; padding: 2rem 1rem;
 }
-h1, h2, h3, strong { color: #f4f4f0; }
+h1, h2, h3, strong { color: #f6f4fb; }
 h1, h2 { font-family: 'Arial Narrow', Impact, sans-serif; text-transform: uppercase; line-height: 0.95; }
 h1 { font-size: 3rem; }
-a { color: #d4ff3a; }
+a { color: #5ef2c6; }
 img { max-width: 100%; height: auto; border-radius: 12px; }
-blockquote { margin: 1.5em 0; padding: 1rem 1.25rem; border-left: 4px solid #d4ff3a; background: rgb(212 255 58 / 0.08); border-radius: 8px; color: #f4f4f0; }
-li::marker { color: #d4ff3a; }
+blockquote { margin: 1.5em 0; padding: 1rem 1.25rem; border-left: 4px solid #5ef2c6; background: rgb(94 242 198 / 0.08); border-radius: 8px; color: #f6f4fb; }
+li::marker { color: #5ef2c6; }
 table { border-collapse: collapse; } th, td { border-bottom: 1px solid #333; padding: 0.5em 0.8em; }

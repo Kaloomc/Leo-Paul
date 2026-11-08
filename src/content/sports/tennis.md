@@ -1,7 +1,7 @@
 ---
 name: Tennis
 emoji: 🎾
-color: "#d4ff3a"
-tagline: Tournois, matchs et technique raquette en main.
-order: 4
+color: "#818cf8"
+tagline: "Tournois, résultats et technique raquette en main."
+order: 5
 ---
