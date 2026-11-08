@@ -13,8 +13,8 @@ const sportMap = new Map(sports.map((s) => [s.id, s]));
 const title = page.currentPage > 1 ? `Articles — page ${page.currentPage}` : 'Articles';
 ---
 
-<BaseLayout title={title} description="Tous les articles du blog sport : analyses, entraînements et récits.">
-  <PageHero eyebrow="Le blog" title="Tous les *articles*" intro={`${page.total} article${page.total > 1 ? 's' : ''} — du terrain à l'analyse.`}>
+<BaseLayout title={title} description="Toute l'actualité sportive sur SportFlash.">
+  <PageHero eyebrow="Actualités" title="Toute l'*actu*" intro={`${page.total} article${page.total > 1 ? 's' : ''}`}>
     <ul class="filters" aria-label="Filtrer par sport">
       <li><a class="chip is-on" href="/blog/" aria-current="page">Tous</a></li>
       {sports.map((s) => (

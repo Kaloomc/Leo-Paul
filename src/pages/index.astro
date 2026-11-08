@@ -4,12 +4,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import SportTile from '../components/SportTile.astro';
 import Ticker from '../components/Ticker.astro';
-import { getPublishedPosts, getSports, displayTitle, plainTitle } from '../lib/posts';
+import { getPublishedPosts, getSports, displayTitle } from '../lib/posts';
 
 const page = await getEntry('pages', 'accueil');
 if (!page) throw new Error('src/content/pages/accueil.md est introuvable');
 const { Content } = await render(page);
-const { title, description, eyebrow, intro, cta, image, stats } = page.data;
+const { title, description, eyebrow, intro, cta, image } = page.data;
 
 const posts = await getPublishedPosts();
 const sports = await getSports();
@@ -22,51 +22,24 @@ const countBySport = (id: string) => posts.filter((p) => p.data.sport === id).le
 const tickerItems = posts.slice(0, 8).map((p) => ({
   label: p.data.title,
   href: `/blog/${p.id}/`,
-  emoji: sportMap.get(p.data.sport)?.data.emoji,
+  tag: sportMap.get(p.data.sport)?.data.name,
 }));
 ---
 
 <BaseLayout description={description} image={image ?? featured?.data.cover}>
-  <!-- ============ HERO ============ -->
+  <!-- ============ EN-TÊTE ============ -->
   <section class="hero">
-    <div class="hero__bg" aria-hidden="true">
-      {['var(--violet)', 'var(--accent)', 'var(--violet)', '#a78bfa'].map((c, i) => <span class="blob" style={`--sport:${c};--n:${i}`}></span>)}
-      <div class="hero__grid"></div>
-    </div>
-
     <div class="container hero__inner">
       <span class="corners hero__corners" aria-hidden="true"></span>
-      <div class="hero__copy">
-        {eyebrow && <p class="kicker hero__kicker">{eyebrow}</p>}
-        <h1 class="display h-xl hero__title" set:html={displayTitle(title)} />
-        <div class="hero__row">
-          <div>
-            {intro && <p class="hero__intro">{intro}</p>}
-            <div class="hero__extra"><Content /></div>
-            <div class="hero__actions">
-              {cta && <a class="btn" href={cta.href}>{cta.label} <span class="arrow" aria-hidden="true">→</span></a>}
-              <a class="btn btn--ghost" href="/sports/">Choisir un sport</a>
-            </div>
-          </div>
-          {stats.length > 0 && (
-            <dl class="stats">
-              {stats.map((s) => (
-                <div><dt class="sr-only">{s.label}</dt><dd><span class="display">{s.value}</span><span class="muted">{s.label}</span></dd></div>
-              ))}
-            </dl>
-          )}
-        </div>
-      </div>
-
-      <div class="badge" aria-hidden="true">
-        <svg viewBox="0 0 200 200">
-          <defs><path id="circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
-          <text><textPath href="#circle" textLength="486" lengthAdjust="spacing">SportFlash • Résultats • SportFlash • Analyses • </textPath></text>
-        </svg>
-        <span class="badge__center">{sports.map((s) => s.data.emoji).slice(0, 1)}</span>
+      {eyebrow && <p class="kicker">{eyebrow}</p>}
+      <h1 class="display hero__title" set:html={displayTitle(title)} />
+      {intro && <p class="hero__intro">{intro}</p>}
+      <div class="hero__extra"><Content /></div>
+      <div class="hero__actions">
+        {cta && <a class="btn" href={cta.href}>{cta.label} <span class="arrow" aria-hidden="true">→</span></a>}
+        <a class="btn btn--ghost" href="/sports/">Par sport</a>
       </div>
     </div>
-
     <ul class="sport-chips container" aria-label="Rubriques">
       {sports.map((s) => (
         <li><a class="chip" style={`--sport:${s.data.color}`} href={`/sports/${s.id}/`}>{s.data.emoji} {s.data.name}</a></li>
@@ -83,9 +56,9 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
         <div class="section-head" data-reveal>
           <div>
             <p class="kicker">À la une</p>
-            <h2 class="display h-lg">Derniers <span class="outline">articles</span></h2>
+            <h2 class="display h-md">Dernières actus</h2>
           </div>
-          <a class="link-arrow" href="/blog/">Tous les articles →</a>
+          <a class="link-arrow" href="/blog/">Toute l'actu →</a>
         </div>
         <div class="bento">
           <div class="bento__main">
@@ -104,8 +77,8 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
     <div class="container">
       <div class="section-head" data-reveal>
         <div>
-          <p class="kicker">Les rubriques</p>
-          <h2 class="display h-lg">Choisis ton <span class="outline">terrain</span></h2>
+          <p class="kicker">Rubriques</p>
+          <h2 class="display h-md">Par sport</h2>
         </div>
         <a class="link-arrow" href="/sports/">Tous les sports →</a>
       </div>
@@ -117,62 +90,23 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
 </BaseLayout>
 
 <style>
-  /* ---------- Hero ---------- */
-  .hero { position: relative; isolation: isolate; padding: clamp(2.5rem, 8vw, 6rem) 0 2.5rem; overflow: hidden; }
-  .hero__bg { position: absolute; inset: 0; z-index: -1; }
-  .blob {
-    position: absolute; width: 42vw; aspect-ratio: 1; border-radius: 50%;
-    background: radial-gradient(closest-side, color-mix(in srgb, var(--sport) 70%, transparent), transparent);
-    filter: blur(40px); opacity: 0.5;
-    animation: float 18s ease-in-out infinite alternate; animation-delay: calc(var(--n) * -4s);
-  }
-  .blob:nth-child(1) { top: -20%; right: -8%; }
-  .blob:nth-child(2) { top: 30%; right: 25%; width: 30vw; }
-  .blob:nth-child(3) { bottom: -30%; left: -10%; }
-  .blob:nth-child(4) { top: -10%; left: 30%; width: 22vw; }
-  @keyframes float {
-    50% { transform: translate(6%, 8%) scale(1.1); }
-    to { transform: translate(-4%, -6%) scale(0.95); }
-  }
-  .hero__grid {
-    position: absolute; inset: 0;
-    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 72px 72px;
-    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 30%, transparent 75%);
+  /* ---------- En-tête ---------- */
+  .hero {
+    position: relative; isolation: isolate; overflow: hidden;
+    padding: clamp(2.5rem, 7vw, 5rem) 0 2.5rem;
+    background: radial-gradient(60% 90% at 85% 0%, color-mix(in srgb, var(--violet) 30%, transparent), transparent 70%);
   }
   .hero__inner { position: relative; container-type: inline-size; padding-block: clamp(1.5rem, 4vw, 3rem); }
-  .hero__corners { --cs: clamp(3rem, 12cqi, 9rem); --cw: clamp(5px, 1cqi, 12px); --ci: 0 0.25rem; z-index: 0; }
-  .hero__copy { position: relative; z-index: 1; }
-  .hero__title { margin: 0; font-size: clamp(3.6rem, 14.5vw, 13rem); }
-  .hero__title :global(.outline) { -webkit-text-stroke-width: clamp(1.5px, 0.3vw, 3px); }
-  .hero__row {
-    display: grid; gap: 2.5rem; margin-top: clamp(1.5rem, 4vw, 3rem); align-items: end;
-  }
-  @media (min-width: 900px) { .hero__row { grid-template-columns: 1.3fr 1fr; } }
-  .hero__intro { font-size: clamp(1.1rem, 2vw, 1.4rem); color: #ddd8e8; max-width: 40ch; margin: 0; }
-  .hero__extra :global(p) { color: var(--muted); max-width: 46ch; margin: 1rem 0 0; }
+  .hero__inner > :not(.corners) { position: relative; z-index: 1; }
+  .hero__corners { --cs: clamp(2.5rem, 8cqi, 5.5rem); --cw: clamp(4px, 0.6cqi, 7px); --ci: 0 0.25rem; z-index: 0; }
+  .hero__title { margin: 0; font-size: clamp(3rem, 9vw, 7.5rem); max-width: 14ch; }
+  .hero__intro { font-size: clamp(1.05rem, 1.8vw, 1.25rem); color: #ddd8e8; max-width: 46ch; margin: 1.5rem 0 0; }
+  .hero__extra :global(p) { color: var(--muted); max-width: 52ch; margin: 1rem 0 0; }
   .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
 
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin: 0; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
-  .stats > div { background: rgb(21 17 29 / 0.85); backdrop-filter: blur(8px); padding: 1.25rem 1rem; }
-  .stats dd { margin: 0; display: grid; gap: 0.35rem; }
-  .stats .display { font-size: clamp(2rem, 4vw, 3rem); color: var(--accent); }
-  .stats .muted { font-size: 0.8rem; line-height: 1.3; }
+  .sport-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
 
-  .badge {
-    position: absolute; right: clamp(9rem, 16vw, 14rem); top: 0.5rem; width: clamp(7rem, 13vw, 11rem); aspect-ratio: 1;
-    display: none; place-items: center;
-  }
-  @media (min-width: 1000px) { .badge { display: grid; } }
-  .badge svg { position: absolute; inset: 0; animation: spin 22s linear infinite; }
-  .badge text { fill: var(--text); font: 800 13px var(--font-body); text-transform: uppercase; }
-  .badge__center { font-size: 3rem; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .sport-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 3rem; padding-top: 0; padding-bottom: 0; }
-  .sport-chips .chip { font-size: 0.85rem; padding: 0.55rem 1rem 0.55rem 0.8rem; }
-
-  /* ---------- Bento ---------- */
+  /* ---------- À la une ---------- */
   .bento { display: grid; gap: 1.25rem; }
   @media (min-width: 700px) { .bento { grid-template-columns: repeat(2, 1fr); } .bento__main { grid-column: 1 / -1; } }
   @media (min-width: 1100px) {
@@ -183,9 +117,5 @@ const tickerItems = posts.slice(0, 8).map((p) => ({
 
   /* ---------- Sports ---------- */
   .sports { background: var(--bg-2); border-block: 1px solid var(--line); }
-  .tiles { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .blob, .badge svg { animation: none; }
-  }
+  .tiles { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); }
 </style>

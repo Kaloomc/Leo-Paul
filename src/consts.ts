@@ -1,8 +1,8 @@
 // Informations globales du site — à personnaliser.
 export const SITE_TITLE = 'SportFlash';
-export const SITE_TAGLINE = 'Le sport, en un éclair';
+export const SITE_TAGLINE = "L'actu sport";
 export const SITE_DESCRIPTION =
-  'SportFlash : foot, cyclisme, sports auto, basket, tennis, rugby, sports US et plus. Résultats, analyses, entraînements et récits.';
+  "SportFlash, l'actualité sportive : foot, cyclisme, sports auto, basket, tennis, rugby, sports US et plus.";
 export const SITE_LOCALE = 'fr_FR';
 
 export const CONTACT = {
@@ -19,7 +19,7 @@ export const SOCIALS: { label: string; icon: 'instagram' | 'tiktok'; url: string
 
 export const NAV = [
   { href: '/sports/', label: 'Sports' },
-  { href: '/blog/', label: 'Articles' },
+  { href: '/blog/', label: 'Actu' },
   { href: '/a-propos/', label: 'À propos' },
   { href: '/contact/', label: 'Contact' },
 ];

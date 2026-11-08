@@ -9,8 +9,8 @@ const posts = await getPublishedPosts();
 const count = (id: string) => posts.filter((p) => p.data.sport === id).length;
 ---
 
-<BaseLayout title="Sports" description="Toutes les rubriques du blog : un sport, une page, tous les articles.">
-  <PageHero eyebrow="Les rubriques" title={`${sports.length} sports, *une passion.*`} intro="Choisis ta discipline et retrouve tous les articles qui lui sont consacrés." />
+<BaseLayout title="Sports" description="Toutes les rubriques de SportFlash : l'actualité de chaque sport.">
+  <PageHero eyebrow="Rubriques" title="Tous les *sports*" intro="Retrouvez l'actualité de chaque discipline." />
   <section class="container tiles">
     {sports.map((s, i) => <SportTile sport={s} count={count(s.id)} index={i} />)}
   </section>

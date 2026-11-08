@@ -114,7 +114,7 @@ collections:
         file: src/content/pages/accueil.md
         fields:
           - { label: Petit titre, name: eyebrow, widget: string, required: false }
-          - { label: Grand titre, name: title, widget: string, hint: "Mettre un passage entre *étoiles* pour l'afficher en contour. Ex. : Le sport, *sans filtre.*" }
+          - { label: Grand titre, name: title, widget: string, hint: "Un passage entre *étoiles* s'affiche en menthe. Ex. : Votre actu *sport*." }
           - { label: Phrase d'accroche, name: intro, widget: text, required: false }
           - { label: Description (Google), name: description, widget: text }
           - { label: Image de partage, name: image, widget: image, required: false, hint: "Image affichée quand le site est partagé sur les réseaux." }
@@ -125,15 +125,6 @@ collections:
             fields:
               - { label: Texte, name: label, widget: string }
               - { label: Lien, name: href, widget: string, default: /blog/ }
-          - label: Chiffres clés
-            name: stats
-            widget: list
-            required: false
-            max: 3
-            summary: "{{fields.value}} {{fields.label}}"
-            fields:
-              - { label: Valeur, name: value, widget: string }
-              - { label: Légende, name: label, widget: string }
           - { label: Texte complémentaire, name: body, widget: markdown, required: false }
 
       - label: À propos
@@ -141,7 +132,7 @@ collections:
         file: src/content/pages/a-propos.md
         fields:
           - { label: Petit titre, name: eyebrow, widget: string, required: false }
-          - { label: Titre, name: title, widget: string, hint: "Passage entre *étoiles* = affiché en contour." }
+          - { label: Titre, name: title, widget: string, hint: "Un passage entre *étoiles* s'affiche en menthe." }
           - { label: Introduction, name: intro, widget: text, required: false }
           - { label: Description (Google), name: description, widget: text }
           - { label: Photo, name: image, widget: image, required: false }
@@ -153,7 +144,7 @@ collections:
         file: src/content/pages/contact.md
         fields:
           - { label: Petit titre, name: eyebrow, widget: string, required: false }
-          - { label: Titre, name: title, widget: string, hint: "Passage entre *étoiles* = affiché en contour." }
+          - { label: Titre, name: title, widget: string, hint: "Un passage entre *étoiles* s'affiche en menthe." }
           - { label: Introduction, name: intro, widget: text, required: false }
           - { label: Description (Google), name: description, widget: text }
           - { label: Texte complémentaire, name: body, widget: markdown, required: false }

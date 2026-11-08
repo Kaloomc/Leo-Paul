@@ -54,8 +54,8 @@ const { title, description, date, updated, cover, coverAlt, tags } = post.data;
     <section class="section related">
       <div class="container">
         <div class="section-head">
-          <h2 class="display h-md">À lire <span class="outline">aussi</span></h2>
-          {sport && <a class="link-arrow" href={`/sports/${sport.id}/`}>Tout {sport.data.name} →</a>}
+          <h2 class="display h-md">À lire aussi</h2>
+          {sport && <a class="link-arrow" href={`/sports/${sport.id}/`}>Toute l'actu {sport.data.name} →</a>}
         </div>
         <ul class="related__grid">
           {related.map((p, i) => <li><ArticleCard post={p} sport={sports.get(p.data.sport)} index={i} /></li>)}

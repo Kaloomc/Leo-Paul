@@ -1,16 +1,9 @@
 ---
-title: "Le sport, *sans filtre.*"
-description: SportFlash — foot, cyclisme, sports auto, basket, tennis, rugby, sports US et plus. Résultats, analyses, entraînements et récits.
-eyebrow: SportFlash · le média sport
-intro: Analyses, plans d'entraînement et récits de terrain. Choisis ton sport, lace tes chaussures, c'est parti.
+title: "Votre actu *sport*."
+description: "SportFlash, l'actualité sportive : foot, cyclisme, sports auto, basket, tennis, rugby, sports US et plus."
+eyebrow: SportFlash
+intro: "Résultats, transferts, compétitions : l'essentiel de l'actualité sportive, au quotidien."
 cta:
-  label: Lire les articles
+  label: Toute l'actu
   href: /blog/
-stats:
-  - value: "8"
-    label: sports couverts
-  - value: "100 %"
-    label: passion
-  - value: "0"
-    label: langue de bois
 ---

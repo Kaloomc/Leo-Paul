@@ -38,7 +38,6 @@ const color = sport?.data.color;
       <a href={`/blog/${post.id}/`}>{title}</a>
     </Heading>
     <p class="card__desc muted">{description}</p>
-    <span class="card__go" aria-hidden="true">Lire <span>→</span></span>
   </div>
 </article>
 
@@ -56,7 +55,7 @@ const color = sport?.data.color;
   .card:hover { border-color: color-mix(in srgb, var(--sport) 55%, transparent); transform: translateY(-4px); }
   .card:hover::before { opacity: 1; }
   .card:hover :global(.cover img) { transform: scale(1.06); }
-  .card:hover :global(.cover__emoji) { transform: rotate(4deg) scale(1.12); }
+  .card:hover :global(.cover__emoji) { transform: scale(1.06); }
   .card:hover :global(.corners)::before { transform: translate(6px, -6px); }
   .card:hover :global(.corners)::after { transform: translate(-6px, 6px); }
   .card:focus-within { outline: 3px solid var(--sport); outline-offset: 3px; }
@@ -70,12 +69,6 @@ const color = sport?.data.color;
   .card__title a:focus-visible { outline: none; }
   .card:hover .card__title a { color: var(--sport); }
   .card__desc { margin: 0; font-size: 0.97rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .card__go {
-    margin-top: auto; padding-top: 0.5rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--sport); display: inline-flex; gap: 0.4rem;
-  }
-  .card__go span { transition: transform 0.3s var(--ease); }
-  .card:hover .card__go span { transform: translateX(5px); }
 
   /* Variante « à la une » : image en grand, texte par-dessus */
   .card--feature { min-height: 30rem; justify-content: flex-end; }
@@ -84,9 +77,8 @@ const color = sport?.data.color;
     flex: 0; padding: clamp(1.4rem, 4vw, 2.75rem);
     background: linear-gradient(to top, rgb(9 7 13 / 0.96) 20%, rgb(9 7 13 / 0.6) 65%, transparent);
   }
-  .card--feature :global(.cover__art) { place-items: start end; padding: clamp(1.5rem, 4vw, 3rem); }
-  .card--feature :global(.cover__emoji) { font-size: clamp(5rem, 12vw, 10rem); }
-  .card--feature :global(.cover__word) { top: 0.1em; bottom: auto; }
+  .card--feature :global(.cover__art) { place-items: center; padding-bottom: 30%; }
+  .card--feature :global(.cover__sport) { display: none; }
   .card--feature :global(.corners) { --cs: clamp(3rem, 12cqi, 8rem); }
   /* le coin bas-gauche passerait sous le texte : on garde celui du haut */
   .card--feature :global(.corners)::after { display: none; }

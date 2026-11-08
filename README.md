@@ -1,6 +1,6 @@
-# Leo-Paul — Blog sport (Astro + Decap CMS)
+# SportFlash — Actu sport (Astro + Decap CMS)
 
-Blog sport statique : une rubrique par sport, articles en Markdown, administration sur `/admin` avec **identifiant + mot de passe**.
+Site d'actualité sportive : une rubrique par sport, articles en Markdown, administration sur `/admin` avec **identifiant + mot de passe**.
 
 ## Démarrer en local
 
@@ -24,7 +24,7 @@ Autres commandes : `npm run build` (sortie dans `dist/`), `npm run preview`, `np
 
 | Quoi | Où |
 |---|---|
-| Nom du site, e-mail, réseaux, menu | `src/consts.ts` |
+| Nom du site, e-mail, liens Instagram/TikTok, menu | `src/consts.ts` |
 | URL du site (SEO, sitemap, RSS) | `astro.config.mjs` (`site`) + `public/robots.txt` + `public/admin/config.yml` |
 | Couleurs, polices, effets | `src/styles/global.css` (variables `:root`) |
 | Sports (nom, emoji, couleur, accroche) | `src/content/sports/*.md` (ou `/admin` → Sports) |
@@ -34,42 +34,80 @@ Autres commandes : `npm run build` (sortie dans `dist/`), `npm run preview`, `np
 | Config de l'admin | `public/admin/config.yml` |
 | Connexion à l'admin | `netlify/functions/cms-auth.mjs` |
 
-## Connexion à l'admin (identifiant + mot de passe)
+## Accès à l'admin : créer et donner les accès
 
-L'admin n'utilise pas de compte GitHub pour les rédacteurs. Une fonction Netlify (`/api/cms-auth`) vérifie l'identifiant et le mot de passe, puis donne à l'éditeur un jeton GitHub limité au dépôt. Les commits sont faits au nom du propriétaire de ce jeton.
+L'admin (`/admin/`) se connecte avec un **identifiant + mot de passe**. Personne n'a besoin de compte GitHub, sauf toi (le propriétaire du dépôt) pour la mise en place.
 
-**Mise en place (une seule fois) :**
+Fonctionnement : quand quelqu'un se connecte, une fonction Netlify vérifie l'identifiant et le mot de passe, puis donne à l'admin un jeton GitHub qui ne peut modifier **que** le dépôt `Kaloomc/Leo-Paul`.
 
-1. **Créer le jeton GitHub** : GitHub → Settings → Developer settings → *Personal access tokens* → **Fine-grained tokens** → *Generate new token*
-   - *Repository access* : **Only select repositories** → `Kaloomc/Leo-Paul`
-   - *Permissions* : **Contents → Read and write** (Metadata → Read est ajouté automatiquement)
-   - Durée : la plus longue possible ; noter la date d'expiration pour le renouveler.
-2. **Créer le compte de l'ami** : en local, lancer
-   ```bash
-   npm run hash-password -- leopaul
-   ```
-   puis taper le mot de passe (12 caractères min). Copier la ligne `leopaul:…:…` affichée.
-   Plusieurs comptes : séparer les lignes par une virgule.
-3. **Netlify** → *Site configuration* → *Environment variables* :
-   - `GITHUB_TOKEN` = le jeton de l'étape 1 (cocher « secret »)
-   - `CMS_USERS` = la ligne de l'étape 2
-4. Redéployer (*Deploys* → *Trigger deploy*). L'admin est sur `https://leo-paul-site.netlify.app/admin/`.
+### Étape 1 — Créer le jeton GitHub (une seule fois)
 
-**Sécurité :** mots de passe hachés (scrypt), jamais stockés en clair ; 8 essais ratés max par IP et par 15 min ; le jeton reste dans les variables Netlify, jamais dans le dépôt. Pour retirer un accès : supprimer sa ligne dans `CMS_USERS` **et** régénérer le jeton GitHub. Mot de passe oublié : refaire l'étape 2 et remplacer la ligne.
+1. Sur GitHub, en haut à droite : ta photo → **Settings**.
+2. Tout en bas du menu de gauche : **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.
+3. Remplir :
+   - **Token name** : `SportFlash admin`
+   - **Expiration** : la plus longue proposée (noter la date quelque part, il faudra le renouveler)
+   - **Repository access** : **Only select repositories** → choisir `Kaloomc/Leo-Paul`
+   - **Permissions** → **Repository permissions** → **Contents** : **Read and write**
+4. **Generate token**, puis **copier** le jeton (`github_pat_…`). Il ne sera plus jamais affiché.
+
+### Étape 2 — Créer un compte (identifiant + mot de passe)
+
+Dans le dossier du projet, sur ton ordinateur :
+
+```bash
+npm run hash-password -- leopaul
+```
+
+- `leopaul` = l'identifiant (lettres minuscules, sans espace).
+- Taper le mot de passe deux fois (12 caractères minimum ; rien ne s'affiche pendant la saisie, c'est normal).
+- La commande affiche une ligne du type `leopaul:3f9a…:8c1d…` → la **copier**. Ce n'est pas le mot de passe : c'est une empreinte, le mot de passe n'est stocké nulle part.
+
+Pour **plusieurs personnes**, refaire la commande pour chacune (`npm run hash-password -- marie`…) et garder toutes les lignes.
+
+### Étape 3 — Enregistrer dans Netlify
+
+1. [app.netlify.com](https://app.netlify.com) → le site → **Site configuration** → **Environment variables** → **Add a variable**.
+2. Ajouter :
+   | Key | Value |
+   |---|---|
+   | `GITHUB_TOKEN` | le jeton de l'étape 1 (cocher **Contains secret values**) |
+   | `CMS_USERS` | la ou les lignes de l'étape 2, **séparées par une virgule** si plusieurs : `leopaul:…:…,marie:…:…` |
+3. **Deploys** → **Trigger deploy** → **Deploy site** (les variables ne sont prises en compte qu'après un nouveau déploiement).
+
+### Étape 4 — Donner l'accès
+
+Envoyer à la personne :
+- l'adresse : `https://leo-paul-site.netlify.app/admin/`
+- son identifiant (ex. `leopaul`) et son mot de passe — de préférence par un canal privé, pas en public.
+
+Elle se connecte, et peut écrire, modifier et publier des articles.
+
+### Gérer les accès ensuite
+
+| Besoin | Que faire |
+|---|---|
+| Ajouter quelqu'un | Étape 2 pour la nouvelle personne, ajouter sa ligne à `CMS_USERS` (après une virgule), redéployer. |
+| Changer un mot de passe / mot de passe oublié | Étape 2 avec le même identifiant, remplacer sa ligne dans `CMS_USERS`, redéployer. |
+| Retirer un accès | Supprimer sa ligne de `CMS_USERS`, **régénérer le jeton GitHub** (étape 1) et remplacer `GITHUB_TOKEN`, redéployer. |
+| Le jeton expire | Refaire l'étape 1, remplacer `GITHUB_TOKEN`, redéployer. |
+
+**Sécurité :** mots de passe hachés (scrypt), jamais en clair ; 8 essais ratés max par adresse IP et par 15 min ; le jeton reste dans Netlify, jamais dans le code. Les articles publiés apparaissent sur GitHub comme des commits du propriétaire du jeton.
 
 ## Mise en ligne (Netlify)
 
 1. Netlify → *Add new site* → *Import from Git* → `Kaloomc/Leo-Paul` (build et dossier lus depuis `netlify.toml`).
-2. Configurer la connexion à l'admin (section ci-dessus).
+2. Créer les accès à l'admin (section ci-dessus).
 3. Le formulaire de contact passe par **Netlify Forms** : activer la détection des formulaires (*Forms*) et la notification e-mail.
 4. Activer la 2FA sur GitHub et Netlify.
 
-## Guide de l'ami (10 min)
+## Guide du rédacteur
 
 1. Aller sur `https://leo-paul-site.netlify.app/admin/` et se connecter avec son **identifiant et mot de passe**.
-2. **Articles** → *Nouveau* : titre, **sport**, date, description, image de couverture (+ sa description), contenu.
-3. Cocher **À la une** pour mettre l'article en grand sur l'accueil.
+2. **Articles** → **Nouveau** : titre, **sport**, date, résumé, image (+ sa description), texte.
+3. Cocher **À la une** pour afficher l'article en grand sur l'accueil.
 4. Laisser **Brouillon** coché tant que ce n'est pas prêt ; le décocher pour mettre en ligne.
-5. Cliquer sur **Publier** puis attendre ~1 min que le site se mette à jour.
-6. **Sports** : ajouter un sport (nom, emoji, couleur, accroche). Il apparaît automatiquement dans le menu et sur l'accueil.
-7. **Pages du site** : modifier les textes d'Accueil, À propos et Contact. Dans les titres, un passage entre `*étoiles*` s'affiche en contour.
+5. **Publier**, puis attendre environ 1 minute que le site se mette à jour.
+6. **Sports** : ajouter ou modifier une rubrique (nom, emoji, couleur, accroche).
+7. **Pages du site** : textes de l'Accueil, À propos et Contact. Dans un titre, un passage entre `*étoiles*` s'affiche en menthe.
+8. Les articles d'exemple (marqués « Article d'exemple ») sont à supprimer une fois les vrais articles publiés.

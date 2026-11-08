@@ -1,6 +1,6 @@
 ---
-title: "On en *parle ?*"
-description: Une idée d'article, un partenariat, une question ? Écris-moi.
+title: "Nous *contacter*"
+description: "Une information, un partenariat, une question ? Contactez SportFlash."
 eyebrow: Contact
-intro: Une idée d'article, un partenariat, une question sur un entraînement ? Le formulaire est là pour ça.
+intro: "Une information, un partenariat, une remarque ? Écrivez-nous via le formulaire."
 ---
