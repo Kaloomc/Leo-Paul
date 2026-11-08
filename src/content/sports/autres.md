@@ -2,6 +2,7 @@
 name: Autres
 emoji: 🏅
 color: "#f6f4fb"
-tagline: "Athlétisme, natation, sports de combat… tout le reste."
-order: 8
+tagline: Athlétisme, natation, sports d'Hiver, sports de raquette… tout le reste
+  pour vous les gens niches
+order: 10
 ---
