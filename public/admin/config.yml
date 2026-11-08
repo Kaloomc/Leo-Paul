@@ -1,7 +1,7 @@
 # Configuration Decap CMS — https://decapcms.org/docs/configuration-options/
 backend:
   name: github
-  repo: TON-USER/TON-REPO   # ⚠️ à remplacer, ex. leopaul/site-leo-paul
+  repo: Kaloomc/Leo-Paul
   branch: main
   commit_messages:
     create: "Création de {{collection}} « {{slug}} »"
