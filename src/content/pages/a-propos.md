@@ -1,11 +1,17 @@
 ---
-title: "À propos de *SportFlash*"
-description: "SportFlash, média d'actualité sportive."
 eyebrow: À propos
-intro: "SportFlash couvre l'actualité sportive : résultats, transferts, compétitions."
+title: À propos de *SportFlash*
+intro: "SportFlash couvre et analyse l'actualité sportive : résultats,
+  transferts, compétitions, pronostics..."
+description: SportFlash, média d'actualité sportive.
 ---
+Après l'échauffement en 2025, SportFlash revient pour vous offrir l'essentiel de l'actualité sportive. Projet de jeunes passionnés qui rêvent de devenir journalistes sportifs.
 
-Texte de présentation à personnaliser : qui est derrière SportFlash, depuis quand, comment nous suivre.
+Rédacteurs en chef : MOÏSE Lucas et AUDIGNON Léo-Paul
+
+
+
+
 
 ## Nos rubriques
 
