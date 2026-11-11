@@ -15,7 +15,7 @@ tags:
   - Formule1
   - Hadjar
   - brésil
-featured: false
+featured: true
 draft: false
 ---
 *Article rédigée par Léo-Paul AUDIGNON*
