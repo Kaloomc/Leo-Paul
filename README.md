@@ -78,7 +78,7 @@ Pour **plusieurs personnes**, refaire la commande pour chacune (`npm run hash-pa
 ### Étape 4 — Donner l'accès
 
 Envoyer à la personne :
-- l'adresse : `https://leo-paul-site.netlify.app/admin/`
+- l'adresse : `https://sport-flash.netlify.app/admin/`
 - son identifiant (ex. `leopaul`) et son mot de passe — de préférence par un canal privé, pas en public.
 
 Elle se connecte, et peut écrire, modifier et publier des articles.
@@ -103,7 +103,7 @@ Elle se connecte, et peut écrire, modifier et publier des articles.
 
 ## Guide du rédacteur
 
-1. Aller sur `https://leo-paul-site.netlify.app/admin/` et se connecter avec son **identifiant et mot de passe**.
+1. Aller sur `https://sport-flash.netlify.app/admin/` et se connecter avec son **identifiant et mot de passe**.
 2. **Articles** → **Nouveau** : titre, **sport**, date, résumé, image (+ sa description), texte.
 3. Cocher **À la une** pour afficher l'article en grand sur l'accueil.
 4. Laisser **Brouillon** coché tant que ce n'est pas prêt ; le décocher pour mettre en ligne.

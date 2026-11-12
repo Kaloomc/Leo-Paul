@@ -9,7 +9,7 @@ const sports = defineCollection({
   schema: z.object({
     name: z.string(),
     emoji: z.string().default('🏅'),
-    color: z.string().regex(/^#[0-9a-fA-F]{6}$/).default('#5ef2c6'),
+    color: z.string().regex(/^#[0-9a-fA-F]{6}$/).default('#69f2c4'),
     tagline: z.string(),
     cover: optionalString,
     order: z.number().default(100),

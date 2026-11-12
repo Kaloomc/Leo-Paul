@@ -8,6 +8,7 @@ const isActive = (href: string) => path.startsWith(href);
 <header class="hdr" transition:persist="header">
   <div class="container hdr__inner">
     <a class="logo" href="/" aria-label={`${SITE_TITLE} — accueil`}>
+      <img class="logo__mark" src="/logo.svg" alt="" width="36" height="37" />
       <span class="logo__name">{SITE_TITLE}</span>
     </a>
 
@@ -80,12 +81,14 @@ const isActive = (href: string) => path.startsWith(href);
   .hdr__inner { display: flex; align-items: center; justify-content: space-between; min-height: 4.5rem; gap: 1rem; }
 
   .logo { display: inline-flex; align-items: center; gap: 0.7rem; text-decoration: none; position: relative; z-index: 2; }
-  /* Nom provisoire en attendant le logo */
   .logo__name {
     font-family: var(--font-display); font-weight: 800; font-stretch: 62%; font-size: 1.9rem; line-height: 1;
     color: var(--accent); transition: letter-spacing 0.4s var(--ease);
   }
   .logo:hover .logo__name { letter-spacing: 0.03em; }
+  .logo__mark { width: 2.25rem; height: auto; transition: transform 0.5s var(--ease); }
+  .logo:hover .logo__mark { transform: rotate(-90deg); }
+  @media (prefers-reduced-motion: reduce) { .logo__mark { transition: none; } }
 
   .nav { display: flex; align-items: center; gap: 1rem; }
   .nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }

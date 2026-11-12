@@ -18,8 +18,8 @@ local_backend:
   url: http://127.0.0.1:8081/api/v1
 
 locale: fr
-site_url: https://leo-paul-site.netlify.app
-display_url: https://leo-paul-site.netlify.app
+site_url: https://sport-flash.netlify.app
+display_url: https://sport-flash.netlify.app
 logo_url: /favicon.svg
 
 media_folder: "public/uploads"
@@ -90,9 +90,9 @@ collections:
       - label: Couleur
         name: color
         widget: select
-        default: "#5ef2c6"
+        default: "#69f2c4"
         options:
-          - { label: "Menthe (SportFlash)", value: "#5ef2c6" }
+          - { label: "Menthe (SportFlash)", value: "#69f2c4" }
           - { label: "Violet", value: "#a78bfa" }
           - { label: "Rose lilas", value: "#f0abfc" }
           - { label: "Cyan", value: "#67e8f9" }

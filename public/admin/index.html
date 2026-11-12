@@ -7,7 +7,7 @@
     <title>Espace rédaction</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <style>
-      :root { color-scheme: dark; --accent: #5ef2c6; --bg: #09070d; --surface: #15111d; --line: rgb(255 255 255 / 0.14); --muted: #aaa3ba; }
+      :root { color-scheme: dark; --accent: #69f2c4; --bg: #09070d; --surface: #15111d; --line: rgb(255 255 255 / 0.14); --muted: #aaa3ba; }
       #login {
         position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px;
         background: radial-gradient(60% 60% at 85% 0%, rgb(212 255 58 / 0.18), transparent 70%), var(--bg);
@@ -15,10 +15,7 @@
       }
       #login[hidden] { display: none; }
       .box { width: min(100%, 380px); display: grid; gap: 14px; }
-      .mark {
-        width: 56px; height: 56px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 8px;
-        background: var(--accent); color: var(--bg); font: 900 26px/1 'Arial Narrow', Impact, sans-serif; transform: skewX(-8deg);
-      }
+      .mark { width: 56px; height: 56px; margin-bottom: 8px; }
       h1 { margin: 0; font: 900 44px/0.9 'Arial Narrow', Impact, sans-serif; text-transform: uppercase; letter-spacing: -0.01em; }
       .sub { margin: 0 0 10px; color: var(--muted); }
       label { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
@@ -41,7 +38,7 @@
     <!-- Écran de connexion (identifiant + mot de passe) affiché avant Decap CMS -->
     <div id="login" hidden>
       <form class="box" id="login-form">
-        <div class="mark" aria-hidden="true">SF</div>
+        <img class="mark" src="/favicon.svg" alt="" width="56" height="56" />
         <h1>Espace rédaction</h1>
         <p class="sub">Connecte-toi pour écrire et publier des articles.</p>
         <label>Identifiant <input name="username" autocomplete="username" autocapitalize="none" required /></label>

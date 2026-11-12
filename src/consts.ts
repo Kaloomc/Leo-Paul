@@ -6,15 +6,15 @@ export const SITE_DESCRIPTION =
 export const SITE_LOCALE = 'fr_FR';
 
 export const CONTACT = {
-  email: 'contact@exemple.fr',
+  email: 'sportflash2025@gmail.com',
   city: '', // ex. 'Lyon, France' — laisser vide pour masquer
 };
 
 // Réseaux (icônes dans l'en-tête, le menu mobile, le pied de page et Contact).
-// ⚠️ Remplacer par les vraies adresses des comptes. Laisser une URL vide pour masquer l'icône.
+// Laisser une URL vide pour masquer l'icône.
 export const SOCIALS: { label: string; icon: 'instagram' | 'tiktok'; url: string }[] = [
-  { label: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/' },
-  { label: 'TikTok', icon: 'tiktok', url: 'https://www.tiktok.com/' },
+  { label: 'Instagram', icon: 'instagram', url: 'https://www.instagram.com/sport_.flash/' },
+  { label: 'TikTok', icon: 'tiktok', url: 'https://www.tiktok.com/@sport..flash' },
 ];
 
 export const NAV = [
