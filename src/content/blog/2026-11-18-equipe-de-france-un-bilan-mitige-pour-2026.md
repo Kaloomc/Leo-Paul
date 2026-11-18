@@ -13,8 +13,8 @@ tags:
   - mbappé
   - équipedefrance
   - football
-featured: true
-draft: true
+featured: false
+draft: false
 ---
 *Article rédigé par Leevan Bon-Laudicina*
 
