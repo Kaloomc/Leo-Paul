@@ -14,7 +14,7 @@ tags:
   - équipedefrance
   - football
 featured: true
-draft: false
+draft: true
 ---
 *Article rédigé par Leevan Bon-Laudicina*
 
