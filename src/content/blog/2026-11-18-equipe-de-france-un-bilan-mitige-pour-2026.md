@@ -1,7 +1,7 @@
 ---
 title: "  Equipe de France : Un bilan mitigé pour 2026 ?"
 sport: foot
-date: 2026-11-19T20:05:00.000+01:00
+date: 2026-11-19T23:54:00.000+01:00
 description: >
   
   L'année s'achève pour l'Equipe de France qui a joué ce dimanche son dernier match face à la Turquie en Ligue des Nations. Les Bleus terminent sur une victoire face à la Turquie sur le score de 2 buts à 1, sans vraiment convaincre, comme un reflet de son année.
@@ -15,9 +15,6 @@ tags:
 featured: true
 draft: false
 ---
-*Article rédigé par Leevan Bon-Laudicina*
-
-
 L’année 2026 fut mouvementée pour l'Equipe de France de football. En plus de la Coupe du monde, les Bleus ont également connu de nombreuses péripéties, entre les nouveaux records et l'arrivée de Zinedine Zidane à la tête de la sélection. Mais peut-on vraiment considérer cette année comme réussie ?
 
 Considérée comme l'une des équipes favorites de la Coupe du monde grâce à un effectif de classe mondiale et de belles performances en matchs de qualification, l'Equipe de France abordait son mondial en pleine confiance. Beaucoup voyaient cette équipe aller au bout de la compétition, emmenée par des stars comme Kylian Mbappé, Michael Olise ou encore le ballon d'or Ousmane Dembélé. Mais si le début de la compétition se déroule de la meilleure manière, avec trois victoires plutôt faciles en phases de poule, puis trois succès d'affilée contre la Suède, le Paraguay et le Maroc qui emmènent les Bleus en demi-finales, la suite s'avère plus compliquée.
@@ -39,3 +36,5 @@ Depuis la prise de fonction de Zinédine Zidane, le jeu des Bleus suscite plusie
 > **2026, une année en demi-teinte pour les Bleus** 
 
 Malgré un parcours jusqu'en demi-finale de la Coupe du monde, l'équipe de France n'a pas totalement répondu aux attentes placées en elle. La qualification pour la suite de la Ligue des Nations représente toutefois un premier motif de satisfaction sous l'ère Zidane, même si les prestations proposées n'ont pas convaincu l'ensemble des supporters. L'avenir reste néanmoins prometteur, porté par un effectif jeune et particulièrement talentueux. Les Bleus ont désormais les yeux tournés vers 2027, avec l'ambition de franchir un nouveau cap.
+
+Leevan Bon-Laudicina
