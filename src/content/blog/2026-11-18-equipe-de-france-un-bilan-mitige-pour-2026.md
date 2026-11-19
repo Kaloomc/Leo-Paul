@@ -1,6 +1,6 @@
 ---
 title: "  Equipe de France : Un bilan mitigé pour 2026 ?"
-sport: foot
+sport: autres
 date: 2026-11-19T20:02:00.000+01:00
 description: >
   
