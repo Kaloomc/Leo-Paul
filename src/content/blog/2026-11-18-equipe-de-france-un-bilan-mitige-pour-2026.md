@@ -1,7 +1,7 @@
 ---
 title: "  Equipe de France : Un bilan mitigé pour 2026 ?"
-sport: autres
-date: 2026-11-19T20:02:00.000+01:00
+sport: foot
+date: 2026-11-19T20:05:00.000+01:00
 description: >
   
   L'année s'achève pour l'Equipe de France qui a joué ce dimanche son dernier match face à la Turquie en Ligue des Nations. Les Bleus terminent sur une victoire face à la Turquie sur le score de 2 buts à 1, sans vraiment convaincre, comme un reflet de son année.
